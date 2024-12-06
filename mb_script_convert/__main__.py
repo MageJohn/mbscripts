@@ -8,6 +8,8 @@ from math import isclose
 from sys import stderr
 import re
 import html
+from textwrap import dedent
+from datetime import datetime
 
 parser = argparse.ArgumentParser()
 parser.add_argument('infile')
@@ -95,14 +97,25 @@ def parse_file(infile):
     return doc
 
 def render(tagged_doc):
-    return "\n".join(render_element(el) for el in tagged_doc.elements)
+    series_title = clean_text(tagged_doc.elements.filter_by_tag('series_title').extract_single_element())
+    episode_title = clean_text(tagged_doc.elements.filter_by_tag('episode_title').extract_single_element())
+    content = "\n".join(s for s in (render_element(el) for el in tagged_doc.elements) if s is not None)
+    header = dedent(f"""
+        +++
+        date = '{datetime.today().strftime('%Y-%m-%d')}'
+        draft = true
+        title = '{series_title} - {episode_title}'
+        +++
+    """).strip()
+
+    return "\n".join([header, "", content])
 
 
 def render_element(element):
     if 'series_title' in element.tags:
-        return f'<h1 class="series-title">{clean_text(element)}</p>'
+        pass
     elif 'episode_title' in element.tags:
-        return f'<h2 class="episode-title">{clean_text(element)}</p>'
+        pass
     elif 'end' in element.tags:
         return f'<p class="end">{clean_text(element)}</p>'
     elif 'direction' in element.tags:
