@@ -1,2 +1,5 @@
 venv/
 __pycache__/
+/public/
+/resources
+node_modules/

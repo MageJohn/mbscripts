@@ -1,0 +1,24 @@
+{{ define "head" }}
+  <style>
+    .transcript {
+      font-family: Courier, serif
+    }
+    .transcript .direction {
+      text-decoration: underline;
+      margin-bottom: 1em;
+    }
+    .transcript .dialogue {
+      margin-left: 5ch;
+      margin-bottom: 1em;
+    }
+  </style>
+{{ end }}
+
+{{ define "main" }}
+  <div class="transcript">
+    <h1 class="mx-auto w-fit mb-2">{{ .Params.Series }}</h1>
+    <h2 class="mx-auto w-fit mb-2">{{ .Title }}</h1>
+
+    {{ .Content }}
+  </div>
+{{ end }}

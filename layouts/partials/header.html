@@ -1,0 +1,16 @@
+<header class="p-2 bg-violet-950 text-xl text-white">
+  <nav class="w-full md:w-2/3 md:mx-auto">
+    <a href="{{ .Site.Home.RelPermalink }}" class="text-fuchsia-300">
+      {{ .Site.Title }}
+    </a>
+    {{ if .Site.Menus.main }}
+      <ul>
+        {{ range .Site.Menus.main }}
+          <li>
+            <a href="{{ .URL }}" title="{{ .Name }} page">
+          </li>
+        {{ end }}
+      </ul>
+    {{ end }}
+  </nav>
+</header>
