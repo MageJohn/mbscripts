@@ -1,24 +1,52 @@
 {{ define "head" }}
   <style>
     .transcript {
-      font-family: Courier, serif
+      font-family: Courier, serif;
     }
     .transcript .direction {
       text-decoration: underline;
       margin-bottom: 1em;
     }
+    .transcript .parenthetical {
+      margin-left: 5.1ch;
+    }
     .transcript .dialogue {
       margin-left: 5ch;
       margin-bottom: 1em;
+    }
+    .transcript .end {
+      margin-left: auto;
+      margin-right: auto;
+      width: fit-content;
+      text-decoration: underline;
     }
   </style>
 {{ end }}
 
 {{ define "main" }}
-  <div class="transcript">
-    <h1 class="mx-auto w-fit mb-2">{{ .Params.Series }}</h1>
-    <h2 class="mx-auto w-fit mb-2">{{ .Title }}</h1>
+  <div class="p-1 bg-fuchsia-300 mb-4">
+    <div class="w-full md:w-2/5 md:mx-auto md:flex">
+      {{ with .Resources.Get "images/cover.png" | default (resources.Get "images/show-cover.png") }}
+        {{ $image := .Process "resize 192x" }}
+        <img
+          src="{{ $image.RelPermalink }}"
+          width="{{ $image.Width }}"
+          height="{{ $image.Height }}"
+          alt=""
+          class="mx-auto md:mx-0"
+        />
+      {{ end }}
 
-    {{ .Content }}
+      <div class="p-2 my-auto">
+        <span class="w-fit opacity-75">{{ .Params.Series }}</span>
+        <h1 class="w-fit text-xl">{{ .Title }}</h1>
+      </div>
+    </div>
+  </div>
+
+  <div class="w-full md:w-2/5 md:mx-auto px-2">
+    <div class="transcript p-4">
+      {{ .Content }}
+    </div>
   </div>
 {{ end }}
