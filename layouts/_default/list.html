@@ -2,11 +2,5 @@
   {{ .Title }}
   {{ .Content }}
 
-  <ul class="">
-    {{ range .Pages }}
-      <li class="">
-        <a href="{{ .RelPermalink }}">{{ .LinkTitle }}</a>
-      </li>
-    {{ end }}
-  </ul>
+  {{ partial "transcript-list.html" . }}
 {{ end }}
