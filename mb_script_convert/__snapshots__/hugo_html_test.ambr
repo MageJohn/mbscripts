@@ -1,0 +1,65 @@
+# serializer version: 1
+# name: test_dump
+  '''
+  +++
+  title = "Panopticon"
+  
+  [params]
+  season = "4"
+  +++
+  
+  <p class="direction">TAPE CLICKS ON</p>
+  <p class="character">PETER</p>
+  <p class="parenthetical">(pleasantly)</p>
+  <p class="dialogue">Is everything alright, Martin?</p>
+  
+  '''
+# ---
+# name: test_dump.1
+  '''
+  +++
+  title = "Panopticon"
+  
+  [params]
+  season = "4"
+  +++
+  
+  <p class="direction">TAPE CLICKS ON</p>
+  <p class="character">PETER</p>
+  <p class="parenthetical">(pleasantly)</p>
+  <p class="dialogue">Is everything alright, Martin?</p>
+  
+  '''
+# ---
+# name: test_dump.2
+  '''
+  +++
+  title = "Panopticon"
+  
+  [params]
+  season = "4"
+  +++
+  
+  <p class="direction">TAPE CLICKS ON</p>
+  <p class="character">PETER</p>
+  <p class="parenthetical">(pleasantly)</p>
+  <p class="dialogue">Is everything alright, Martin?</p>
+  
+  '''
+# ---
+# name: test_dumps
+  '''
+  +++
+  title = "Panopticon"
+  
+  [params]
+  season = "4"
+  +++
+  
+  <p class="direction">TAPE CLICKS ON</p>
+  <p class="character">PETER</p>
+  <p class="parenthetical">(pleasantly)</p>
+  <p class="dialogue">Is everything alright, Martin?</p>
+  
+  '''
+# ---
