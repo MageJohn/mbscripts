@@ -1,14 +1,11 @@
-import pickle
 import re
-from os import environ
-from pathlib import Path
-from typing import Any
 from urllib.parse import urlparse
 from warnings import warn
 
 import feedparser
 
-from mb_script_convert.transcript import Transcript
+from .feeds_cache import cache
+from .transcript import Transcript
 
 
 def scrape_episode_metadata(transcript: Transcript, url_file_stream_or_string):
@@ -35,10 +32,6 @@ def scrape_episode_metadata(transcript: Transcript, url_file_stream_or_string):
     m.season_episode_number = episode.itunes_episode
 
 
-XDG_CACHE_HOME = Path(environ.get("XDG_CACHE_HOME", Path.home() / ".cache"))
-CACHE_FILE = XDG_CACHE_HOME / "mb-scripts" / "feeds.pickle"
-
-
 def _get_feed(url_file_stream_or_string):
     looks_like_url = isinstance(url_file_stream_or_string, str) and urlparse(
         url_file_stream_or_string
@@ -47,38 +40,29 @@ def _get_feed(url_file_stream_or_string):
         return feedparser.parse(url_file_stream_or_string)
     url: str = url_file_stream_or_string
 
-    if CACHE_FILE.exists():
-        with CACHE_FILE.open("rb") as f:
-            feeds: dict[str, Any] = pickle.load(f)
-    else:
-        feeds = {}
-
-    modified = False
-    if url not in feeds:
-        feeds[url] = feedparser.parse(url)
-        modified = True
-        match feeds[url].status:
+    if url not in cache:
+        cache[url] = feedparser.parse(url)
+        match cache[url].status:
             case 200 | 302:
                 # all good
                 pass
             case 301:
                 warn(
-                    f"HTTP response 301: {url} has permanently moved to {feeds[url].href}"
+                    f"HTTP response 301: {url} has permanently moved to {cache[url].href}"
                 )
             case _:
                 warn(
-                    f"Something went wrong fetching {url} (status {feeds[url].status}). Cannot scrape metadata"
+                    f"Something went wrong fetching {url} (status {cache[url].status}). Cannot scrape metadata"
                 )
                 return
     else:
-        old_feed = feeds[url]
+        cached_feed = cache[url]
         new_feed = feedparser.parse(
-            url, etag=old_feed.get("etag"), modified=old_feed.get("modified")
+            url, etag=cached_feed.get("etag"), modified=cached_feed.get("modified")
         )
         match new_feed.status:
             case 200 | 302:
-                feeds[url] = new_feed
-                modified = True
+                cache[url] = new_feed
             case 304:
                 # the feed has not been modified
                 pass
@@ -86,19 +70,13 @@ def _get_feed(url_file_stream_or_string):
                 warn(
                     f"HTTP response 301: {url} has permanently moved to {new_feed.href}"
                 )
-                feeds[url] = new_feed
-                modified = True
+                cache[url] = new_feed
             case _:
                 warn(
                     f"Something went wrong fetching {url} (status {new_feed.status}). Using cached feed."
                 )
 
-    if modified:
-        CACHE_FILE.parent.mkdir(parents=True, exist_ok=True)
-        with CACHE_FILE.open("wb") as f:
-            pickle.dump(feeds, f, pickle.HIGHEST_PROTOCOL)
-
-    return feeds[url]
+    return cache[url]
 
 
 def _match_episode(ep_title: str, feed):
