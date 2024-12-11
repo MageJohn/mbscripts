@@ -3,6 +3,7 @@ from warnings import warn
 
 from py_pdf_parser.exceptions import ElementOutOfRangeError, NoElementFoundError
 from py_pdf_parser.loaders import PDFDocument, load_file
+from titlecase import titlecase
 
 from mb_script_convert.pdf_utils import (
     NotTaggedError,
@@ -93,9 +94,9 @@ def tagged_pdf_to_transcript(tagged: PDFDocument) -> Transcript:
     transcript = Transcript()
     for el in tagged.elements:
         if "series_title" in el.tags:
-            transcript.set_metadata("series", clean_text(el))
+            transcript.metadata.series = titlecase(clean_text(el))
         elif "episode_title" in el.tags:
-            transcript.set_metadata("episode-title", clean_text(el))
+            transcript.metadata.episode_title = clean_text(el)
         elif "direction" in el.tags:
             transcript.add_content("direction", clean_text(el))
         elif "character" in el.tags:

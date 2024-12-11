@@ -5,7 +5,7 @@
   title = "Panopticon"
   
   [params]
-  season = "4"
+  season = 4
   +++
   
   <p class="direction">TAPE CLICKS ON</p>
@@ -21,7 +21,7 @@
   title = "Panopticon"
   
   [params]
-  season = "4"
+  season = 4
   +++
   
   <p class="direction">TAPE CLICKS ON</p>
@@ -37,7 +37,7 @@
   title = "Panopticon"
   
   [params]
-  season = "4"
+  season = 4
   +++
   
   <p class="direction">TAPE CLICKS ON</p>
@@ -53,7 +53,7 @@
   title = "Panopticon"
   
   [params]
-  season = "4"
+  season = 4
   +++
   
   <p class="direction">TAPE CLICKS ON</p>

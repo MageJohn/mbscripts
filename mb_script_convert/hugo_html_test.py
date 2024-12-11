@@ -3,13 +3,13 @@ from pathlib import Path
 import pytest
 
 from mb_script_convert.hugo_html import dump, dumps
-from mb_script_convert.transcript import Transcript
+from mb_script_convert.transcript import Metadata, Transcript
 
 
 @pytest.fixture
 def transcript():
     return Transcript(
-        metadata={"episode-title": "Panopticon", "season": "4"},
+        metadata=Metadata(episode_title="Panopticon", season=4),
         content=[
             ("direction", "TAPE CLICKS ON"),
             ("character", "PETER"),

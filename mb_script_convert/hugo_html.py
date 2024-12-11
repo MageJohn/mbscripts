@@ -7,7 +7,7 @@ import lxml.html as html
 import lxml.html.builder as b
 import tomli_w
 
-from .transcript import Metadata, Transcript
+from .transcript import Transcript
 
 type HugoFrontmatter = dict[str, str | HugoFrontmatter]
 
@@ -19,7 +19,7 @@ def dump(transcript: Transcript, file_or_path: str | Path | IO[bytes]):
         file = nullcontext(file_or_path)
     with file as fh:
         fh.write(b"+++\n")
-        tomli_w.dump(_metadata_to_hugo_frontmatter(transcript.metadata), fh)
+        tomli_w.dump(transcript.metadata.to_hugo_frontmatter(), fh)
         fh.write(b"+++\n\n")
 
         for el in transcript.content:
@@ -33,13 +33,3 @@ def dumps(transcript: Transcript) -> str:
     out = BytesIO()
     dump(transcript, out)
     return out.getvalue().decode("utf-8")
-
-
-def _metadata_to_hugo_frontmatter(metadata: Metadata):
-    frontmatter: HugoFrontmatter = {"params": {}}
-    for k in metadata:
-        if k == "episode-title":
-            frontmatter["title"] = metadata[k]
-        else:
-            frontmatter["params"][k] = metadata[k]  # pyright: ignore [reportIndexIssue]
-    return frontmatter

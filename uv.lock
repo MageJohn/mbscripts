@@ -179,6 +179,7 @@ source = { virtual = "." }
 dependencies = [
     { name = "lxml" },
     { name = "py-pdf-parser" },
+    { name = "titlecase" },
     { name = "tomli-w" },
 ]
 
@@ -192,6 +193,7 @@ dev = [
 requires-dist = [
     { name = "lxml", specifier = ">=5.3.0" },
     { name = "py-pdf-parser", specifier = ">=0.13.0" },
+    { name = "titlecase", specifier = ">=2.4.1" },
     { name = "tomli-w", specifier = ">=1.1.0" },
 ]
 
@@ -282,6 +284,11 @@ wheels = [
     { url = "https://files.pythonhosted.org/packages/ed/c7/8cd6b5fa8cc4a5c025d3d36a014dff44436fda8b3003a471253931c77f1b/syrupy-4.8.0-py3-none-any.whl", hash = "sha256:544f4ec6306f4b1c460fdab48fd60b2c7fe54a6c0a8243aeea15f9ad9c638c3f", size = 49530 },
 ]
 
+[[package]]
+name = "titlecase"
+version = "2.4.1"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/63/17/04d2d3e30e2bc5a3eefa1060b08e3fb628510440f938eaecabbe08976a26/titlecase-2.4.1.tar.gz", hash = "sha256:7d83a277ccbbda11a2944e78a63e5ccaf3d32f828c594312e4862f9a07f635f5", size = 14434 }
 [[package]]
 name = "tomli-w"
 version = "1.1.0"
