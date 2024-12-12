@@ -81,8 +81,6 @@ def _get_feed(url_file_stream_or_string):
 
 def _match_episode(ep_title: str, feed):
     title_re = re.compile(re.escape(ep_title), re.I)
-    entry = None
     for entry in feed.entries:
         if title_re.search(entry.title):
-            break
-    return entry
+            return entry
