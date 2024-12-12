@@ -1,4 +1,6 @@
 import re
+from datetime import datetime
+from time import struct_time
 from urllib.parse import urlparse
 from warnings import warn
 
@@ -27,7 +29,7 @@ def scrape_episode_metadata(transcript: Transcript, url_file_stream_or_string):
 
     m = transcript.metadata
     m.cover_url = episode.image.href
-    m.date_published = episode.published
+    m.date_published = _date_to_iso(episode.published_parsed)
     m.season = episode.itunes_season
     m.season_episode_number = episode.itunes_episode
 
@@ -84,3 +86,14 @@ def _match_episode(ep_title: str, feed):
     for entry in feed.entries:
         if title_re.search(entry.title):
             return entry
+
+
+def _date_to_iso(date: struct_time):
+    return datetime(
+        date.tm_year,
+        date.tm_mon,
+        date.tm_mday,
+        date.tm_hour,
+        date.tm_min,
+        date.tm_sec,
+    ).isoformat()
