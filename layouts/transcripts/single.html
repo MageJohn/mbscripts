@@ -26,17 +26,16 @@
 {{ define "main" }}
   <div class="p-1 bg-fuchsia-300 mb-4">
     <div class="w-full md:w-2/5 md:mx-auto md:flex">
-      {{ with .Resources.Get "images/cover.png" | default (resources.Get "images/show-cover.png") }}
-        {{ $image := .Process "resize 192x" }}
-        <img
-          src="{{ $image.RelPermalink }}"
-          width="{{ $image.Width }}"
-          height="{{ $image.Height }}"
-          alt=""
-          class="mx-auto md:mx-0"
-        />
-      {{ end }}
-
+      {{ $width := 192 }}
+      {{ $height := 192 }}
+      {{ $url := partial "GetCover.html" (dict "context" . "width" $width "height" $height) }}
+      <img
+        src="{{ $url }}"
+        width="{{ $width }}"
+        height="{{ $height }}"
+        alt="Episode cover"
+        class="mx-auto md:mx-0"
+      />
 
       <div class="p-2 my-auto">
         <span class="w-fit opacity-75">{{ .Params.Series }}</span>

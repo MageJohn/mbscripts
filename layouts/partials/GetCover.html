@@ -1,0 +1,27 @@
+{{ $width := .width }}
+{{ $height := .height }}
+{{ $image := false }}
+{{ $url := false }}
+
+{{ with .context }}
+  {{ if .Params.cover_url }}
+    {{ with urls.Parse .Params.cover_url }}
+      {{ if and (strings.Contains .Hostname "imgix.net") (not (.Query.Has "s")) }}
+        {{/* known CDN that supports processing through URL parameters */}}
+        {{/* an "s" query parameter though means the URL is signed and cannot be manipulated */}}
+        {{ $url = printf "%s://%s%s?fit=clip&auto=format,compress&w=%d&h=%d" .Scheme .Host .Path $width $height }}
+      {{ else }}
+        {{ $image = resources.GetRemote .String }}
+      {{ end }}
+    {{ end }}
+  {{ else }}
+    {{ $image = .Resources.Get "images/cover.png" | default (resources.Get "images/show-cover.png") }}
+  {{ end }}
+
+  {{ if $image }}
+    {{ $image = $image.Process (printf "resize %dx" $width) }}
+    {{ $url = $image.RelPermalink }}
+  {{ end }}
+{{ end }}
+
+{{ return $url }}
