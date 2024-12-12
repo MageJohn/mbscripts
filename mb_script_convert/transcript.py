@@ -27,6 +27,8 @@ class Metadata:
             match name:
                 case "episode_title":
                     frontmatter["title"] = value
+                case "date_published":
+                    frontmatter["date"] = value
                 case _:
                     params[name] = value
         return frontmatter
