@@ -37,9 +37,7 @@ def extract_parentheticals(transcript: Transcript):
             elif parenthetical:
                 transcript.content[i] = ("parenthetical", parenthetical)
                 if len(rest) > 0:
-                    transcript.content[i + 1 : i + 1] = [  # pyright: ignore [reportCallIssue, reportArgumentType]
-                        ("dialogue", rest),
-                    ]
+                    transcript.content.insert(i + 1, ("dialogue", rest))
         i += 1
 
 
