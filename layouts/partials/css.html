@@ -1,18 +1,18 @@
-{{ $tailwind := resources.Get "css/tailwind.css" | postCSS }}
+{{- $tailwind := resources.Get "css/tailwind.css" | postCSS -}}
 
-{{ if hugo.IsDevelopment }}
-  {{/* ensure tailwind will rebuild on every update only in development */}}
-  {{ $tailwind = $tailwind | resources.ExecuteAsTemplate (printf "css/tailwind.dev.%v.css" now.UnixMilli) . }}
-{{ end }}
+{{- if hugo.IsDevelopment -}}
+  {{- /* ensure tailwind will rebuild on every update only in development */ -}}
+  {{- $tailwind = $tailwind | resources.ExecuteAsTemplate (printf "css/tailwind.dev.%v.css" now.UnixMilli) . -}}
+{{- end -}}
 
-{{ $css := slice $tailwind }}
+{{- $css := slice $tailwind -}}
 
-{{ if hugo.IsProduction }}
-  {{ with $css | resources.Concat "css/bundle.css" | minify | fingerprint }}
+{{- if hugo.IsProduction -}}
+  {{- with $css | resources.Concat "css/bundle.css" | minify | fingerprint -}}
     <link rel="stylesheet" href="{{ .RelPermalink }}" />
-  {{ end }}
-{{ else }}
-  {{ range $css }}
+  {{- end -}}
+{{- else -}}
+  {{- range $css -}}
     <link rel="stylesheet" href="{{ .RelPermalink }}" />
-  {{ end }}
-{{ end }}
+  {{- end -}}
+{{- end -}}

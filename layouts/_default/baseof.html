@@ -8,13 +8,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>
       {{ block "title" . }}
-        {{ with .Params.Title }}{{ . }} |{{ end }}{{ .Site.Title }}
+        {{- with .Params.Title }}{{ . }} |{{ end }}{{ .Site.Title -}}
       {{ end }}
     </title>
     {{ hugo.Generator }}
     <meta name="robots" content="all" />
-
-    {{ with .Params.author | default .Site.Params.author }}
+    {{- with .Params.author | default .Site.Params.author -}}
       <meta
         name="author"
         content="
@@ -25,7 +24,7 @@
         {{- end -}}
       "
       />
-    {{ end }}
+    {{- end -}}
 
     {{ if .Params.canonicalUrl }}
       <link rel="canonical" href="{{ .Params.canonicalUrl }}" />
@@ -33,18 +32,18 @@
       <link rel="canonical" href="{{ .Permalink }}" />
     {{ end }}
 
-    {{ partialCached "css.html" . }}
+    {{- partialCached "css.html" . -}}
 
-    {{ block "head" . }}{{ end }}
+    {{- block "head" . -}}{{- end -}}
   </head>
   <body>
-    {{ partial "header.html" . }}
+    {{- partial "header.html" . -}}
 
 
     <main>
-      {{ block "main" . }}{{ end }}
+      {{- block "main" . -}}{{- end -}}
     </main>
 
-    {{ partial "footer.html" . }}
+    {{- partial "footer.html" . -}}
   </body>
 </html>
