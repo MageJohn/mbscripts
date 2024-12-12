@@ -25,7 +25,7 @@
 
 {{ define "main" }}
   <div class="p-1 bg-fuchsia-300 mb-4">
-    <div class="w-full md:w-2/5 md:mx-auto md:flex">
+    <div class="max-w-screen-sm mx-auto sm:flex">
       {{ $width := 192 }}
       {{ $height := 192 }}
       {{ $url := partial "GetCover.html" (dict "context" . "width" $width "height" $height) }}
@@ -33,8 +33,8 @@
         src="{{ $url }}"
         width="{{ $width }}"
         height="{{ $height }}"
-        alt="Episode cover"
-        class="mx-auto md:mx-0"
+        alt=""
+        class="mx-auto"
       />
 
       <div class="p-2 my-auto">
@@ -44,7 +44,7 @@
     </div>
   </div>
 
-  <div class="w-full md:w-2/5 md:mx-auto px-2">
+  <div class="max-w-screen-sm mx-auto px-2">
     <div class="transcript p-4">
       {{ .Content }}
     </div>
