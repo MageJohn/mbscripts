@@ -28,7 +28,7 @@ class Metadata:
                 case "episode_title":
                     frontmatter["title"] = value
                 case _:
-                    params[name.replace("_", "-")] = value
+                    params[name] = value
         return frontmatter
 
 

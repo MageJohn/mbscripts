@@ -9,7 +9,9 @@ from mb_script_convert.transcript import Metadata, Transcript
 @pytest.fixture
 def transcript():
     return Transcript(
-        metadata=Metadata(episode_title="Panopticon", season=4),
+        metadata=Metadata(
+            episode_title="Panopticon", season=4, date_published="October 17, 2019"
+        ),
         content=[
             ("direction", "TAPE CLICKS ON"),
             ("character", "PETER"),

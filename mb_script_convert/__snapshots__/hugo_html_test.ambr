@@ -6,6 +6,7 @@
   
   [params]
   season = 4
+  date_published = "October 17, 2019"
   +++
   
   <p class="direction">TAPE CLICKS ON</p>
@@ -22,6 +23,7 @@
   
   [params]
   season = 4
+  date_published = "October 17, 2019"
   +++
   
   <p class="direction">TAPE CLICKS ON</p>
@@ -38,6 +40,7 @@
   
   [params]
   season = 4
+  date_published = "October 17, 2019"
   +++
   
   <p class="direction">TAPE CLICKS ON</p>
@@ -54,6 +57,7 @@
   
   [params]
   season = 4
+  date_published = "October 17, 2019"
   +++
   
   <p class="direction">TAPE CLICKS ON</p>
