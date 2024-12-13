@@ -40,6 +40,12 @@
       <div class="p-2 my-auto">
         <span class="w-fit opacity-75">{{ .Params.Series }}</span>
         <h1 class="w-fit text-xl">{{ .Title }}</h1>
+        <time
+          class="text-sm italic"
+          {{ printf `datetime="%s"` (.Date.Format  `2006-01-02T15:04:05Z07:00`) | safeHTMLAttr }}
+        >
+          {{- .Date | time.Format "January 2, 2006" -}}
+        </time>
       </div>
     </div>
   </div>
