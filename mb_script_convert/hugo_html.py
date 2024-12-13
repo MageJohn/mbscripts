@@ -14,7 +14,9 @@ type HugoFrontmatter = dict[str, str | HugoFrontmatter]
 
 def dump(transcript: Transcript, file_or_path: str | Path | IO[bytes]):
     if isinstance(file_or_path, str) or isinstance(file_or_path, Path):
-        file = open(file_or_path, "wb+")
+        path = Path(file_or_path)
+        path.parent.mkdir(parents=True, exist_ok=True)
+        file = path.open("wb+")
     else:
         file = nullcontext(file_or_path)
     with file as fh:
