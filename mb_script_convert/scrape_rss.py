@@ -25,10 +25,14 @@ def scrape_episode_metadata(transcript: Transcript, url_file_stream_or_string):
         return
 
     m = transcript.metadata
-    m.cover_url = episode.image.href
     m.date_published = _date_to_iso(episode.published_parsed)
     m.season = episode.itunes_season
     m.season_episode_number = episode.itunes_episode
+
+    if "image" in episode:
+        m.cover_url = episode.image.href
+    else:
+        warn("Could not find a cover image")
 
 
 def _get_feed(url_file_stream_or_string):
