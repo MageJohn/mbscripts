@@ -28,7 +28,7 @@
     <div class="max-w-screen-sm mx-auto sm:flex">
       {{ $width := 192 }}
       {{ $height := 192 }}
-      {{ $url := partial "GetCover.html" (dict "context" . "width" $width "height" $height) }}
+      {{ $url := partial "GetCover.html" (dict "context" . "width" ( mul $width 2) "height" (mul $height 2)) }}
       <img
         src="{{ $url }}"
         width="{{ $width }}"
