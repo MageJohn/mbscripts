@@ -26,15 +26,15 @@
 {{ define "main" }}
   <div class="p-1 text-neutral-800 bg-fuchsia-300 mb-4">
     <div class="max-w-screen-sm mx-auto sm:flex">
-      {{ $width := 192 }}
-      {{ $height := 192 }}
-      {{ $url := partial "GetCover.html" (dict "context" . "width" ( mul $width 2) "height" (mul $height 2)) }}
+      {{ $width := 1000 }}
+      {{ $height := 1000 }}
+      {{ $url := partial "GetCover.html" (dict "context" . "width" $width "height" $height) }}
       <img
         src="{{ $url }}"
         width="{{ $width }}"
         height="{{ $height }}"
         alt=""
-        class="mx-auto"
+        class="mx-auto w-64 h-64"
       />
 
       <div class="p-2 my-auto">
@@ -50,8 +50,8 @@
     </div>
   </div>
 
-  <div class="max-w-screen-sm mx-auto px-2">
-    <div class="transcript text-neutral-700 p-4">
+  <div class="max-w-screen-sm mx-auto">
+    <div class="transcript p-4">
       {{ .Content }}
     </div>
   </div>
