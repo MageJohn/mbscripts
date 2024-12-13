@@ -21,8 +21,8 @@ export default {
         "brand-4": "#FE7BE5",
       },
       fontFamily: {
-        transcript: ['Courier', 'serif']
-      }
+        transcript: ["Courier", "serif"],
+      },
     },
   },
   plugins: [],
