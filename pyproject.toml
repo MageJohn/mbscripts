@@ -8,6 +8,7 @@ dependencies = [
     "feedparser>=6.0.11",
     "lxml>=5.3.0",
     "py-pdf-parser>=0.13.0",
+    "rapidfuzz>=3.10.1",
     "titlecase>=2.4.1",
     "tomli-w>=1.1.0",
 ]

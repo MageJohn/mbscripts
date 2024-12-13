@@ -8,6 +8,7 @@ from titlecase import titlecase
 from mb_script_convert.pdf_utils import (
     NotTaggedError,
     by_indent,
+    by_min_indent,
     clean_text,
     is_centered,
     is_in_top_right,
@@ -55,7 +56,11 @@ def tag_pdf(pdf: PDFDocument):
     # Tag ending
     last_page = pdf.pages[-1].elements
     try:
-        end = last_page.filter_by_regex(r".*end.*", re.I).last()
+        end = (
+            last_page.filter_by_regex(r".*\bend\b.*", re.I)
+            .filter(by_min_indent(DIALOGUE_INDENT + 10))
+            .last()
+        )
         end.add_tag("end")
     except NoElementFoundError:
         warn("Warning: could not find THE END or equivalent")

@@ -43,7 +43,7 @@ def extract_parentheticals(transcript: Transcript):
 
 def combine_more(transcript: Transcript):
     for i, (tag, text) in enumerate(transcript.content):
-        if tag == "direction" and text == "(MORE)":
+        if tag == "direction" and "(MORE)" in text:
             assert i < len(transcript.content) - 1
             _, contd = transcript.content[i + 1]
             if "(CONT'D)" not in contd.replace("’", "'"):

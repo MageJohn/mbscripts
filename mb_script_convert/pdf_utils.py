@@ -37,8 +37,15 @@ def is_off_page(element: PDFElement) -> bool:
 
 
 def by_indent(indent: float | int) -> Callable[[PDFElement], bool]:
-    def filter(element) -> bool:
+    def filter(element: PDFElement) -> bool:
         return isclose(element.bounding_box.x0, indent, abs_tol=10)
+
+    return filter
+
+
+def by_min_indent(indent: float | int) -> Callable[[PDFElement], bool]:
+    def filter(element: PDFElement) -> bool:
+        return element.bounding_box.x0 > indent
 
     return filter
 

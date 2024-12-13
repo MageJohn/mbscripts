@@ -3,6 +3,7 @@ import sys
 
 from mb_script_convert.scrape_rss import scrape_episode_metadata
 
+from . import normalisations
 from .hugo_html import dump
 from .import_midnight_burger import import_transcript
 
@@ -28,6 +29,7 @@ parser.add_argument(
 
 def main(infile, outfile, episode_title, skip_scraping, rss_url):
     doc = import_transcript(infile)
+    normalisations.run_all(doc)
     if episode_title:
         doc.metadata.episode_title = episode_title
     if not skip_scraping:

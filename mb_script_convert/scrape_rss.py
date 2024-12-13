@@ -1,10 +1,10 @@
-import re
 from datetime import datetime
 from time import struct_time
 from urllib.parse import urlparse
 from warnings import warn
 
 import feedparser
+from rapidfuzz import fuzz
 
 from .feeds_cache import cache
 from .transcript import Transcript
@@ -22,9 +22,6 @@ def scrape_episode_metadata(transcript: Transcript, url_file_stream_or_string):
 
     episode = _match_episode(ep_title, feed)
     if episode is None:
-        warn(
-            f"Could not find episode with title {ep_title} in the RSS feed. Additional metadata has not been scraped"
-        )
         return
 
     m = transcript.metadata
@@ -82,10 +79,16 @@ def _get_feed(url_file_stream_or_string):
 
 
 def _match_episode(ep_title: str, feed):
-    title_re = re.compile(re.escape(ep_title), re.I)
+    most_similar = (0, "")
     for entry in feed.entries:
-        if title_re.search(entry.title):
+        ratio = fuzz.ratio(ep_title, entry.title)
+        if ratio > most_similar[0]:
+            most_similar = (ratio, entry.title)
+        if ratio >= 90:
             return entry
+    print(f"Could not find entry matching '{ep_title}'")
+    print(f"The most similar title is {most_similar[1]} (similarity {most_similar[0]})")
+    print("Set the correct title with the --episode-title flag")
 
 
 def _date_to_iso(date: struct_time):
