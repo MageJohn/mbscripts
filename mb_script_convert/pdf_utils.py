@@ -55,10 +55,12 @@ def clean_text(element: PDFElement) -> str:
 
 
 LINE_BREAK = re.compile(r" *\n *")
+HYPHEN_LINE_BREAK = re.compile(r"-\n")
 
 
 def join_lines(string: str) -> str:
-    return LINE_BREAK.sub(" ", string)
+    joined_hyphens = HYPHEN_LINE_BREAK.sub("-", string)
+    return LINE_BREAK.sub(" ", joined_hyphens)
 
 
 class NotTaggedError(Exception):
