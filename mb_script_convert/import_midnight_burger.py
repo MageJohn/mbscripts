@@ -6,7 +6,6 @@ from py_pdf_parser.loaders import PDFDocument, load_file
 from titlecase import titlecase
 
 from mb_script_convert.pdf_utils import (
-    NotTaggedError,
     by_indent,
     by_min_indent,
     clean_text,
@@ -86,9 +85,9 @@ def tag_pdf(pdf: PDFDocument):
 
     others = script - script.filter_by_tags("direction/character", "dialogue")
     if len(others) > 0:
-        warn("Warning: found text that has not been categorised:")
+        print("Warning: found text that has not been categorised:")
         for el in others:
-            warn(f"{el.text()} {el.bounding_box}")
+            print(f"{repr(el.text())} {el.bounding_box}")
 
     script = directions | dialogue
 
@@ -118,6 +117,4 @@ def tagged_pdf_to_transcript(tagged: PDFDocument) -> Transcript:
             transcript.add_content("dialogue", clean_text(el))
         elif "end" in el.tags:
             transcript.add_content("end", clean_text(el))
-        else:
-            raise NotTaggedError(f"Element is not properly tagged: {el}")
     return transcript
