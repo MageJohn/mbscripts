@@ -1,13 +1,54 @@
-<header class="p-2 bg-violet-950 text-xl text-white">
-  <nav class="max-w-screen-sm mx-auto">
-    <a href="{{ .Site.Home.RelPermalink }}" class="text-fuchsia-300">
+<header class="p-2 bg-violet-950 text-white">
+  <nav class="max-w-screen-sm mx-auto sm:flex">
+    <a
+      href="{{ .Site.Home.RelPermalink }}"
+      class="text-fuchsia-300 text-xl grow"
+    >
       {{ .Site.Title }}
     </a>
     {{ if .Site.Menus.main }}
-      <ul>
+      <label for="main-menu-toggle" class="select-none sm:hidden">Menu</label>
+      <input type="checkbox" id="main-menu-toggle" class="peer hidden" />
+      <ul
+        class="peer-checked:block hidden bg-violet-900 py-1 rounded-sm sm:bg-inherit sm:flex sm:peer-checked:flex"
+      >
         {{ range .Site.Menus.main }}
-          <li>
-            <a href="{{ .URL }}" title="{{ .Name }} page"></a>
+          <li
+            class="py-1 px-3 hover:bg-violet-800 sm:hover:bg-violet-900 sm:rounded-sm"
+          >
+            {{ if .HasChildren }}
+              {{- $slug := printf "%s-menu-toggle" (.KeyName | anchorize) -}}
+              <label for="{{ $slug }}" class="cursor-pointer select-none">
+                {{ .Name }}
+                {{/* heroicon chevron-down */}}
+                <svg
+                  class="size-4 inline"
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke-width="1.5"
+                  stroke="currentColor"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    d="m19.5 8.25-7.5 7.5-7.5-7.5"
+                  />
+                </svg>
+              </label>
+              <input type="checkbox" id="{{ $slug }}" class="peer hidden" />
+              <ul
+                class="peer-checked:block hidden bg-violet-700 py-1 leading-relaxed rounded-sm sm:absolute sm:mt-1 sm:ml-0.5"
+              >
+                {{ range .Children }}
+                  <li class="hover:bg-violet-500 py-1 px-3">
+                    <a href="{{ .URL }}">{{ .Name }}</a>
+                  </li>
+                {{ end }}
+              </ul>
+            {{ else }}
+              <a href="{{ .URL }}">{{ .Name }}</a>
+            {{ end }}
           </li>
         {{ end }}
       </ul>
