@@ -87,10 +87,11 @@ def _get_feed(url_file_stream_or_string):
 def _match_episode(ep_title: str, feed):
     most_similar = (0, "")
     for entry in feed.entries:
-        ratio = fuzz.ratio(ep_title, entry.title)
+        ratio = fuzz.partial_ratio(ep_title, entry.title)
         if ratio > most_similar[0]:
             most_similar = (ratio, entry.title)
-        if ratio >= 90:
+        if ratio >= 85:
+            print(f"Matched episode '{entry.title}' in RSS feed")
             return entry
     print(f"Could not find entry matching '{ep_title}'")
     print(f"The most similar title is {most_similar[1]} (similarity {most_similar[0]})")
