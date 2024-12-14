@@ -1,6 +1,8 @@
-from warnings import warn
+import logging
 
 from .transcript import Transcript
+
+logger = logging.getLogger(__name__)
 
 
 def _parse_parenthetical(text: str):
@@ -47,6 +49,8 @@ def combine_more(transcript: Transcript):
             assert i < len(transcript.content) - 1
             _, contd = transcript.content[i + 1]
             if "(CONT'D)" not in contd.replace("’", "'"):
-                warn(f"Warning: (CONT'D) not found after (MORE). Instead found {contd}")
+                logger.warning(
+                    f"(CONT'D) not found after (MORE). Instead found {contd}"
+                )
             else:
                 del transcript.content[i : i + 2]

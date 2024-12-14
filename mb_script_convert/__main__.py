@@ -1,4 +1,5 @@
 import argparse
+import logging
 import sys
 
 from mb_script_convert.scrape_rss import scrape_episode_metadata
@@ -6,6 +7,8 @@ from mb_script_convert.scrape_rss import scrape_episode_metadata
 from . import normalisations
 from .hugo_html import dump
 from .import_midnight_burger import import_transcript
+
+logger = logging.getLogger(__name__)
 
 MB_RSS_URL = "https://feeds.megaphone.fm/midnightburger"
 
@@ -29,6 +32,8 @@ parser.add_argument("--debug", action="store_true")
 
 
 def main(infile, outfile, episode_title, skip_scraping, rss_url, debug):
+    logging.basicConfig(level=logging.INFO, format="{levelname}: {message}", style="{")
+
     doc = import_transcript(infile, debug)
     normalisations.run_all(doc)
     if episode_title:

@@ -1,5 +1,5 @@
+import logging
 import re
-from warnings import warn
 
 from py_pdf_parser.exceptions import ElementOutOfRangeError, NoElementFoundError
 from py_pdf_parser.loaders import PDFDocument, load_file
@@ -16,6 +16,8 @@ from mb_script_convert.pdf_utils import (
 
 from .transcript import Transcript
 from .transcript_utils import combine_more, extract_parentheticals
+
+logger = logging.getLogger(__name__)
 
 DIRECTIONS_INDENT = 108.0
 DIALOGUE_INDENT = 144.0
@@ -45,7 +47,7 @@ def tag_pdf(pdf: PDFDocument):
     # Ignore page numbers
     page_numbers = pdf.elements.filter_by_regex(r"\d+\.").filter(is_in_top_right)
     if len(page_numbers) == 0:
-        warn("Warning: could not find page numbers.")
+        logger.warning("Could not find page numbers.")
     page_numbers.ignore_elements()
 
     # Detect and ignore title page
@@ -54,7 +56,7 @@ def tag_pdf(pdf: PDFDocument):
         first_page.ignore_elements()
         first_page = pdf.elements.filter_by_page(2)
     else:
-        warn("Warning: could not find title page")
+        logger.warning("Could not find title page")
 
     # Tag front matter
     first_page[0].add_tag("series_title")
@@ -70,7 +72,7 @@ def tag_pdf(pdf: PDFDocument):
         )
         end.add_tag("end")
     except NoElementFoundError:
-        warn("Warning: could not find THE END or equivalent")
+        logger.warning("Could not find THE END or equivalent")
 
     # Rest of the script
     script = pdf.elements - pdf.elements.filter_by_tags(
@@ -85,9 +87,9 @@ def tag_pdf(pdf: PDFDocument):
 
     others = script - script.filter_by_tags("direction/character", "dialogue")
     if len(others) > 0:
-        print("Warning: found text that has not been categorised:")
+        logger.warning("Found text that has not been categorised:")
         for el in others:
-            print(f"{repr(el.text())} {el.bounding_box}")
+            logger.warning(f"{repr(el.text())} {el.bounding_box}")
 
     script = directions | dialogue
 

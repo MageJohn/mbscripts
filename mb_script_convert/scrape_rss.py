@@ -1,14 +1,16 @@
+import logging
 from dataclasses import fields
 from datetime import datetime
 from time import struct_time
 from urllib.parse import urlparse
-from warnings import warn
 
 import feedparser
 from rapidfuzz import fuzz
 
 from .feeds_cache import cache
 from .transcript import Transcript
+
+logger = logging.getLogger(__name__)
 
 
 def scrape_episode_metadata(transcript: Transcript, url_file_stream_or_string):
@@ -34,7 +36,7 @@ def scrape_episode_metadata(transcript: Transcript, url_file_stream_or_string):
     for field in fields(m):
         name, value = field.name, getattr(m, field.name)
         if value is None:
-            print(f"Could find a value for {name}")
+            logger.warning(f"Could not find a value for {name}")
 
 
 def _get_feed(url_file_stream_or_string):
@@ -52,11 +54,11 @@ def _get_feed(url_file_stream_or_string):
                 # all good
                 pass
             case 301:
-                warn(
+                logger.warning(
                     f"HTTP response 301: {url} has permanently moved to {cache[url].href}"
                 )
             case _:
-                warn(
+                logger.warning(
                     f"Something went wrong fetching {url} (status {cache[url].status}). Cannot scrape metadata"
                 )
                 return
@@ -72,12 +74,12 @@ def _get_feed(url_file_stream_or_string):
                 # the feed has not been modified
                 pass
             case 301:
-                warn(
+                logger.warning(
                     f"HTTP response 301: {url} has permanently moved to {new_feed.href}"
                 )
                 cache[url] = new_feed
             case _:
-                warn(
+                logger.warning(
                     f"Something went wrong fetching {url} (status {new_feed.status}). Using cached feed."
                 )
 
@@ -91,11 +93,13 @@ def _match_episode(ep_title: str, feed):
         if ratio > most_similar[0]:
             most_similar = (ratio, entry.title)
         if ratio >= 85:
-            print(f"Matched episode '{entry.title}' in RSS feed")
+            logger.info(f"Matched episode '{entry.title}' in RSS feed")
             return entry
-    print(f"Could not find entry matching '{ep_title}'")
-    print(f"The most similar title is {most_similar[1]} (similarity {most_similar[0]})")
-    print("Set the correct title with the --episode-title flag")
+    logger.warning(f"Could not find entry matching '{ep_title}'")
+    logger.warning(
+        f"The most similar title is {most_similar[1]} (similarity {most_similar[0]})"
+    )
+    logger.warning("Set the correct title with the --episode-title flag")
 
 
 def _date_to_iso(date: struct_time):
