@@ -25,10 +25,11 @@ parser.add_argument(
     default=MB_RSS_URL,
     help="Override the URL of the Midnight Burger RSS feed",
 )
+parser.add_argument("--debug", action="store_true")
 
 
-def main(infile, outfile, episode_title, skip_scraping, rss_url):
-    doc = import_transcript(infile)
+def main(infile, outfile, episode_title, skip_scraping, rss_url, debug):
+    doc = import_transcript(infile, debug)
     normalisations.run_all(doc)
     if episode_title:
         doc.metadata.episode_title = episode_title
@@ -40,5 +41,10 @@ def main(infile, outfile, episode_title, skip_scraping, rss_url):
 if __name__ == "__main__":
     args = parser.parse_args()
     main(
-        args.infile, args.outfile, args.episode_title, args.skip_scraping, args.rss_url
+        args.infile,
+        args.outfile,
+        args.episode_title,
+        args.skip_scraping,
+        args.rss_url,
+        args.debug,
     )

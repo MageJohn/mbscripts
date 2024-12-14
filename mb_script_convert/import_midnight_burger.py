@@ -22,13 +22,21 @@ DIRECTIONS_INDENT = 108.0
 DIALOGUE_INDENT = 144.0
 
 
-def import_transcript(pdf_file: str) -> Transcript:
+def import_transcript(pdf_file: str, debug: bool) -> Transcript:
     pdf = load_file(pdf_file)
     tag_pdf(pdf)
+    if debug:
+        _visualise(pdf)
     transcript = tagged_pdf_to_transcript(pdf)
     extract_parentheticals(transcript)
     combine_more(transcript)
     return transcript
+
+
+def _visualise(pdf: PDFDocument):
+    from py_pdf_parser.visualise import visualise
+
+    visualise(pdf)
 
 
 def tag_pdf(pdf: PDFDocument):

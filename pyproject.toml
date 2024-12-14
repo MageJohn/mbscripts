@@ -15,6 +15,10 @@ dependencies = [
 
 [dependency-groups]
 dev = [
+    "matplotlib>=3.9.4",
+    "pillow>=11.0.0",
     "pytest>=8.3.4",
+    "pyvoronoi>=1.1.5",
+    "shapely>=2.0.6",
     "syrupy>=4.8.0",
 ]
