@@ -1,3 +1,4 @@
+from dataclasses import fields
 from datetime import datetime
 from time import struct_time
 from urllib.parse import urlparse
@@ -25,14 +26,15 @@ def scrape_episode_metadata(transcript: Transcript, url_file_stream_or_string):
         return
 
     m = transcript.metadata
-    m.date_published = _date_to_iso(episode.published_parsed)
-    m.season = episode.itunes_season
-    m.season_episode_number = episode.itunes_episode
+    m.date_published = _date_to_iso(episode.get("published_parsed"))
+    m.season = episode.get("itunes_season")
+    m.season_episode_number = episode.get("itunes_episode")
+    m.cover_url = getattr(episode.get("image"), "href", None)
 
-    if "image" in episode:
-        m.cover_url = episode.image.href
-    else:
-        warn("Could not find a cover image")
+    for field in fields(m):
+        name, value = field.name, getattr(m, field.name)
+        if value is None:
+            print(f"Could find a value for {name}")
 
 
 def _get_feed(url_file_stream_or_string):
