@@ -1,7 +1,7 @@
 +++
-title = "Season 4"
+title = "Welcome to the Horizon"
 [menus]
   [menus.main]
     parent = "Seasons"
-    weight = 30
+    weight = 35
 +++
