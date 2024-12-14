@@ -2,32 +2,52 @@
   <nav class="max-w-screen-sm mx-auto sm:flex">
     <a
       href="{{ .Site.Home.RelPermalink }}"
-      class="text-fuchsia-300 text-xl grow"
+      class="text-fuchsia-300 text-xl grow block"
     >
       {{ .Site.Title }}
     </a>
     {{ if .Site.Menus.main }}
-      <label for="main-menu-toggle" class="select-none sm:hidden">Menu</label>
-      <input type="checkbox" id="main-menu-toggle" class="peer hidden" />
+      <input
+        type="checkbox"
+        id="main-menu-toggle"
+        class="peer sr-only sm:hidden"
+      />
+      <label
+        for="main-menu-toggle"
+        class="select-none cursor-pointer inline-block py-1 px-3 peer-focus-visible:outline-dashed peer-focus-visible:outline-1 peer-focus-visible:outline-fuchsia-500 sm:hidden"
+      >
+        Menu
+      </label>
       <ul
         class="peer-checked:block hidden bg-violet-900 py-1 rounded-sm sm:bg-inherit sm:flex sm:peer-checked:flex"
       >
         {{ range .Site.Menus.main }}
-          <li
-            class="py-1 px-3 hover:bg-violet-800 sm:hover:bg-violet-900 sm:rounded-sm"
-          >
+          <li class="hover:bg-violet-800 sm:hover:bg-violet-900 sm:rounded-sm">
             {{ if .HasChildren }}
               {{- $slug := printf "%s-menu-toggle" (.KeyName | anchorize) -}}
-              <label for="{{ $slug }}" class="cursor-pointer select-none">
+              <input type="checkbox" id="{{ $slug }}" class="peer sr-only" />
+              <label
+                for="{{ $slug }}"
+                class="
+                  cursor-pointer select-none inline-block py-1 px-3 w-full
+                  peer-checked:bg-violet-800
+                  peer-checked:sm:bg-violet-900
+                  peer-focus-visible:outline-dashed
+                  peer-focus-visible:outline-1
+                  peer-focus-visible:outline-fuchsia-500
+                "
+              >
                 {{ .Name }}
                 {{/* heroicon chevron-down */}}
                 <svg
-                  class="size-4 inline"
+                  class="inline"
                   xmlns="http://www.w3.org/2000/svg"
                   fill="none"
                   viewBox="0 0 24 24"
-                  stroke-width="1.5"
+                  stroke-width="1.8"
                   stroke="currentColor"
+                  height="1rem"
+                  width="1rem"
                 >
                   <path
                     stroke-linecap="round"
@@ -36,18 +56,27 @@
                   />
                 </svg>
               </label>
-              <input type="checkbox" id="{{ $slug }}" class="peer hidden" />
               <ul
-                class="peer-checked:block hidden bg-violet-700 py-1 leading-relaxed rounded-sm sm:absolute sm:mt-1 sm:ml-0.5"
+                class="peer-checked:block hidden bg-violet-700 py-1 leading-relaxed rounded-sm sm:absolute"
               >
                 {{ range .Children }}
-                  <li class="hover:bg-violet-500 py-1 px-3">
-                    <a href="{{ .URL }}">{{ .Name }}</a>
+                  <li class="hover:bg-violet-500">
+                    <a
+                      href="{{ .URL }}"
+                      class="inline-block py-1 px-3 w-full focus-visible:outline-dashed focus-visible:outline-1 focus-visible:outline-fuchsia-500"
+                    >
+                      {{ .Name }}
+                    </a>
                   </li>
                 {{ end }}
               </ul>
             {{ else }}
-              <a href="{{ .URL }}">{{ .Name }}</a>
+              <a
+                href="{{ .URL }}"
+                class="inline-block py-1 px-3 w-full focus-visible:outline-dashed focus-visible:outline-1 focus-visible:outline-fuchsia-500"
+              >
+                {{ .Name }}
+              </a>
             {{ end }}
           </li>
         {{ end }}
