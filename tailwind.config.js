@@ -1,6 +1,6 @@
 /** @type {import('tailwindcss').Config} */
 export default {
-  content: ["./hugo_stats.json"],
+  content: ["./layouts/**/*.html"],
   theme: {
     screens: {
       sm: "48rem", // 768px (at font size 16)

@@ -1,18 +1,3 @@
 baseURL = 'https://example.org/'
 languageCode = 'en-us'
 title = 'Midnight Burger Transcript Archive'
-
-[module]
-  [[module.mounts]]
-    source = "assets"
-    target = "assets"
-  [[module.mounts]]
-    source = "hugo_stats.json"
-    target = "assets/watching/hugo_stats.json"
-
-[build]
-  [build.buildStats]
-    enable = true
-  [[build.cachebusters]]
-    source = "assets/watching/hugo_stats\\.json"
-    target = "tailwind\\.css"
