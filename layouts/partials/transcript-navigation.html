@@ -1,0 +1,13 @@
+{{- $pages := where site.RegularPages "Section" "==" "transcripts" -}}
+<div class="flex w-full text-lg p-1">
+  <div class="text-left w-full">
+    {{ with $pages.Prev . }}
+      <a href="{{ .RelPermalink }}">← Previous</a>
+    {{ end }}
+  </div>
+  <div class="text-right w-full">
+    {{ with $pages.Next . }}
+      <a href="{{ .RelPermalink }}">Next →</a>
+    {{ end }}
+  </div>
+</div>
