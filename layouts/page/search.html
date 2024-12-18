@@ -1,0 +1,79 @@
+{{ define "main" }}
+  <search class="max-w-screen-sm mx-auto p-2">
+    <div class="mb-6">
+      <label>
+        Search:
+        <input class="border-2 rounded-md" type="search" id="search-input" />
+      </label>
+    </div>
+
+    <div class="flex gap-2">
+      <fieldset id="sorts" class="flex-none flex flex-col">
+        <legend>Sort by</legend>
+        <label>
+          <input type="radio" name="sort" value="" checked />
+          Relevance
+        </label>
+        <label>
+          <input type="radio" name="sort" value="date:desc" />
+          Newest first
+        </label>
+        <label>
+          <input type="radio" name="sort" value="date:asc" />
+          Oldest first
+        </label>
+      </fieldset>
+      <output class="">
+        <p id="result-status"></p>
+        <ol id="result-output" class="divide-y-2 border-b-2">
+          <template id="result-template">
+            <li class="result p-1">
+              <p>
+                <a class="result__title text-lg font-bold" href="">
+                  Result Title
+                </a>
+              </p>
+              <p class="result__excerpt">
+                result excerpt with <mark>keywords</mark> and other text
+              </p>
+            </li>
+          </template>
+        </ol>
+        <button
+          id="load-more"
+          class="border-2 rounded-lg px-1 m-2 w-full"
+          hidden
+        >
+          Load more results
+        </button>
+      </output>
+    </div>
+  </search>
+
+  {{ $searchJS := "js/search.js" }}
+  {{ with resources.Get $searchJS }}
+    {{ if hugo.IsDevelopment }}
+      {{ $searchJS = .RelPermalink }}
+    {{ else }}
+      {{ with . | minify | fingerprint }}
+        {{ $searchJS = .RelPermalink }}
+      {{ end }}
+    {{ end }}
+  {{ end }}
+  <script type="module">
+    import {MBPagefindUI} from "{{ $searchJS }}";
+    const ui = new MBPagefindUI({
+      searchInput: "#search-input",
+      template: {
+        element: "#result-template",
+        title: ".result__title",
+        excerpt: ".result__excerpt"
+      },
+      output: "#result-output",
+      loadMoreButton: "#load-more",
+      statusOut: '#result-status',
+      sortRadios: '#sorts input[name="sort"]',
+    });
+    document.addEventListener("DOMContentLoaded", () => ui.init());
+  </script>
+{{ end }}

@@ -43,8 +43,8 @@
   <body>
     {{- partialCached "header.html" . -}}
 
-
-    <main>
+    {{ $doIndex := and .IsPage (eq .Type "transcripts") }}
+    <main {{ if $doIndex }}data-pagefind-body{{ end }}>
       {{- block "main" . -}}{{- end -}}
     </main>
 
