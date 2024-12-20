@@ -1,3 +1,10 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+mark {
+  @apply bg-yellow-300 text-neutral-700;
+}
+.dark mark {
+  @apply bg-yellow-500 text-neutral-700;
+}
