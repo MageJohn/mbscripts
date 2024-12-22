@@ -1,10 +1,13 @@
 {{ define "main" }}
   <search class="max-w-screen-sm mx-auto p-2">
     <div class="mb-6">
-      <label>
-        Search:
-        <input class="border-2 rounded-md" type="search" id="search-input" />
-      </label>
+      <label class="sr-only" for="search-input">Search</label>
+      <input
+        class="block border-2 border-neutral-300 bg-neutral-50 focus-visible:border-fuchsia-900 rounded-md p-2 w-full mx-auto"
+        type="search"
+        id="search-input"
+        placeholder="Search"
+      />
     </div>
 
     <div class="flex gap-2">
