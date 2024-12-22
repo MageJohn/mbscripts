@@ -1,11 +1,11 @@
-{{- $tailwind := resources.Get "css/tailwind.css" | postCSS -}}
+{{- $main := resources.Get "css/main.css" | postCSS -}}
 
 {{- if hugo.IsDevelopment -}}
-  {{- /* ensure tailwind will rebuild on every update only in development */ -}}
-  {{- $tailwind = $tailwind | resources.ExecuteAsTemplate (printf "css/tailwind.dev.%v.css" now.UnixMilli) . -}}
+  {{- /* ensure main will rebuild on every update only in development */ -}}
+  {{- $main = $main | resources.ExecuteAsTemplate (printf "css/main.dev.%v.css" now.UnixMilli) . -}}
 {{- end -}}
 
-{{- $css := slice $tailwind -}}
+{{- $css := slice $main -}}
 
 {{- if hugo.IsProduction -}}
   {{- with $css | resources.Concat "css/bundle.css" | minify | fingerprint -}}
