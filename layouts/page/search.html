@@ -10,23 +10,54 @@
       />
     </div>
 
-    <div class="flex gap-2">
-      <fieldset id="sorts" class="flex-none flex flex-col">
-        <legend>Sort by</legend>
-        <label>
-          <input type="radio" name="sort" value="" checked />
-          Relevance
-        </label>
-        <label>
-          <input type="radio" name="sort" value="date:desc" />
-          Newest first
-        </label>
-        <label>
-          <input type="radio" name="sort" value="date:asc" />
-          Oldest first
-        </label>
-      </fieldset>
-      <output class="">
+    <div class="sm:flex sm:gap-2">
+      <details
+        id="sort-filter"
+        class="group flex-none flex flex-col w-full sm:w-52"
+      >
+        <summary class="select-none list-none flex border-b p-1">
+          <span class="grow">Sort / Filter</span>
+          <span
+            aria-hidden="true"
+            class="material-symbols-outlined inline-block group-open:rotate-180 max-w-6 overflow-clip"
+          >
+            arrow_drop_up
+          </span>
+        </summary>
+        <fieldset class="p-1 border-b">
+          <legend>Sort by</legend>
+          <div class="px-1">
+            <label class="block">
+              <input type="radio" name="sort" value="" checked />
+              Relevance
+            </label>
+            <label class="block">
+              <input type="radio" name="sort" value="date:desc" />
+              Newest first
+            </label>
+            <label class="block">
+              <input type="radio" name="sort" value="date:asc" />
+              Oldest first
+            </label>
+          </div>
+        </fieldset>
+        <template id="filter-set-tpl">
+          <fieldset class="p-1 border-b">
+            <legend>Filter title</legend>
+            <div class="filter-set__container px-1"></div>
+          </fieldset>
+        </template>
+        <template id="filter-tpl">
+          <div>
+            <input id="filter-name" type="checkbox" />
+            <label for="filter-name" class="select-none">
+              <span class="filter__name">Filter name</span>
+              <span class="filter__amount">(5)</span></label
+            >
+          </div>
+        </template>
+      </details>
+      <output>
         <p id="result-status"></p>
         <ol id="result-output" class="divide-y-2 border-b-2">
           <template id="result-template">
@@ -67,7 +98,7 @@
     import {MBPagefindUI} from "{{ $searchJS }}";
     const ui = new MBPagefindUI({
       searchInput: "#search-input",
-      template: {
+      resultTemplate: {
         element: "#result-template",
         title: ".result__title",
         excerpt: ".result__excerpt"
@@ -75,8 +106,27 @@
       output: "#result-output",
       loadMoreButton: "#load-more",
       statusOut: '#result-status',
-      sortRadios: '#sorts input[name="sort"]',
+      sortRadios: '#sort-filter input[name="sort"]',
+      filterSetContainer: '#sort-filter',
+      filterSetTemplate: {
+        element: '#filter-set-tpl',
+        container: '.filter-set__container',
+        title: 'legend'
+      },
+      filterTemplate: {
+        element: '#filter-tpl',
+        input: 'input',
+        label: 'label',
+        name: '.filter__name',
+        amount: '.filter__amount'
+      }
     });
     document.addEventListener("DOMContentLoaded", () => ui.init());
+    window.SearchUI = ui;
+
+    const sm = window.matchMedia("(min-width: 48rem)");
+    if (sm.matches) {
+      document.querySelector('#sort-filter').open = true;
+    }
   </script>
 {{ end }}

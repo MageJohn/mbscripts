@@ -4,32 +4,51 @@ export class MBPagefindUI {
   constructor(options) {
     const {
       searchInput,
-      template,
+      resultTemplate,
       output,
       loadMoreButton,
       statusOut,
       pageSize,
       sortRadios,
+      filterSetContainer,
+      filterSetTemplate,
+      filterTemplate,
       ...pf_options
     } = options;
 
+    // HTML Element inputs/outputs
     this.searchInput = document.querySelector(searchInput);
     this.output = document.querySelector(output);
     this.loadMoreButton = document.querySelector(loadMoreButton);
     this.statusOut = document.querySelector(statusOut);
-
-    this.template = {
-      ...template,
-      element: document.querySelector(template.element).cloneNode(true),
-    };
-
+    this.filterSetContainer = document.querySelector(filterSetContainer);
     if (sortRadios) {
       this.sortRadios = Array.from(document.querySelectorAll(sortRadios));
     }
-    this.sort = {};
 
+    // Templates
+    this.resultTemplate = {
+      ...resultTemplate,
+      element: document.querySelector(resultTemplate.element).cloneNode(true),
+    };
+    this.filterSetTemplate = {
+      ...filterSetTemplate,
+      element: document
+        .querySelector(filterSetTemplate.element)
+        .cloneNode(true),
+    };
+    this.filterTemplate = {
+      ...filterTemplate,
+      element: document.querySelector(filterTemplate.element).cloneNode(true),
+    };
+
+    // State
+    this.filterAmountElements = {};
+    this.filtersData = {};
+    this.filtersState = {};
+
+    // Options
     this.pageSize = pageSize ?? 5;
-
     this.pf_options = pf_options;
   }
 
@@ -41,9 +60,71 @@ export class MBPagefindUI {
       el.addEventListener("change", this);
     }
     await pagefind.options(this.pf_options);
-    this.setSortState();
+    await this.loadFilters();
     if (this.searchInput.value) {
       await this.search(this.searchInput.value, { immediate: true });
+    }
+  }
+
+  async loadFilters() {
+    this.filtersData = await pagefind.filters();
+    this.showFilters();
+  }
+
+  showFilters() {
+    for (const filterSet of sortedKeys(this.filtersData)) {
+      const filterSetTpl =
+        this.filterSetTemplate.element.content.cloneNode(true);
+      const title = filterSetTpl.querySelector(this.filterSetTemplate.title);
+      const container = filterSetTpl.querySelector(
+        this.filterSetTemplate.container,
+      );
+
+      title.textContent = kebabToTitleCase(filterSet);
+
+      this.filterAmountElements[filterSet] = {};
+      this.filtersState[filterSet] = { any: [] };
+
+      for (const filter of sortedKeys(this.filtersData[filterSet])) {
+        const filterTpl = this.filterTemplate.element.content.cloneNode(true);
+        const input = filterTpl.querySelector(this.filterTemplate.input);
+        const label = filterTpl.querySelector(this.filterTemplate.label);
+        const name = filterTpl.querySelector(this.filterTemplate.name);
+        const amount = filterTpl.querySelector(this.filterTemplate.amount);
+
+        const id = `${filterSet}-${kebabCase(filter)}`;
+        input.id = id;
+        input.name = filter;
+        label.htmlFor = id;
+        name.textContent = filter;
+        amount.textContent = `(${this.filtersData[filterSet][filter]})`;
+
+        this.filterAmountElements[filterSet][filter] = amount;
+
+        input.addEventListener("change", (event) => {
+          if (event.currentTarget.checked) {
+            this.filtersState[filterSet].any.push(filter);
+          } else {
+            this.filtersState[filterSet].any = this.filtersState[
+              filterSet
+            ].any.filter((f) => f !== filter);
+          }
+          this.search(this.searchInput.value, { immediate: true });
+        });
+
+        container.appendChild(filterTpl);
+      }
+
+      this.filterSetContainer.appendChild(filterSetTpl);
+    }
+  }
+
+  updateFilterAmounts() {
+    for (const filterSet in this.filtersData) {
+      for (const filter in this.filtersData[filterSet]) {
+        const amount = this.filterAmountElements[filterSet][filter];
+        amount.textContent = `(${this.filtersData[filterSet][filter]})`;
+      }
     }
   }
 
@@ -53,7 +134,6 @@ export class MBPagefindUI {
     } else if (event.currentTarget === this.loadMoreButton) {
       this.loadMore();
     } else if (this.sortRadios.includes(event.currentTarget)) {
-      this.setSortState();
       this.search(this.searchInput.value, { immediate: true });
     }
   }
@@ -63,15 +143,20 @@ export class MBPagefindUI {
     const debounceDelay = immediate ? 0 : 300;
     const search = await pagefind.debouncedSearch(
       term,
-      { sort: this.sort },
+      { sort: this.getSortState(), filters: this.filtersState },
       debounceDelay,
     );
     if (search !== null) {
-      return this.process(search.results, term);
+      await this.process(search, term);
     }
   }
 
-  async process(results, term) {
+  async process(search, term) {
+    const results = search.results;
+
+    this.filtersData = search.totalFilters;
+    this.updateFilterAmounts();
+
     this.remainingResults = results;
     this.showStatus(results.length, term);
     await this.loadMore(true);
@@ -101,9 +186,9 @@ export class MBPagefindUI {
   }
 
   showResult(resultData) {
-    const el = this.template.element.content.cloneNode(true);
-    const title = el.querySelector(this.template.title);
-    const excerpt = el.querySelector(this.template.excerpt);
+    const el = this.resultTemplate.element.content.cloneNode(true);
+    const title = el.querySelector(this.resultTemplate.title);
+    const excerpt = el.querySelector(this.resultTemplate.excerpt);
     title.href = resultData.url;
     title.textContent = resultData.meta.title;
     excerpt.innerHTML = resultData.excerpt;
@@ -123,18 +208,32 @@ export class MBPagefindUI {
     }
   }
 
-  setSortState() {
+  getSortState() {
     let key = this.sortRadios.find((el) => el.checked)?.value;
     if (key) {
       let value = "desc";
       if (key.includes(":")) {
         [key, value] = key.split(":");
       }
-      this.sort = {
+      return {
         [key]: value,
       };
     } else {
-      this.sort = {};
+      return {};
     }
   }
+}
+
+function kebabToTitleCase(str) {
+  return str
+    .replace(/\w-\w/g, (t) => `${t.charAt(0)} ${t.charAt(2).toUpperCase()}`)
+    .replace(/^\w/, (t) => t.toUpperCase());
+}
+
+function kebabCase(str) {
+  return str.toLowerCase().replace(" ", "-");
+}
+
+function sortedKeys(obj) {
+  return Object.keys(obj).sort();
 }
