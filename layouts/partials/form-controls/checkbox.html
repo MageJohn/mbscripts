@@ -1,0 +1,16 @@
+{{- $id := .id -}}
+{{- $checked := .checked -}}
+<input
+  id="{{ $id }}"
+  type="checkbox"
+  class="
+    appearance-none m-0
+    size-3.5 border-2 border-current rounded-sm bg-transparent
+    hover:opacity-90
+    checked:bg-violet-700 checked:border-violet-700
+    before:hidden checked:before:block before:size-full before:bg-neutral-50 before:check-clip-path
+    forced-colors:before:bg-[CanvasText]
+    dark:checked:bg-violet-400 dark:checked:border-violet-400
+  "
+  {{ with $checked }}checked{{ end }}
+/>

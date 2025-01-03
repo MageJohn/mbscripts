@@ -5,13 +5,14 @@
 />
 
 {{- $main := resources.Get "css/main.css" | postCSS -}}
+{{- $formControls := resources.Get "css/formControls.css" | postCSS -}}
 
 {{- if hugo.IsDevelopment -}}
   {{- /* ensure main will rebuild on every update only in development */ -}}
   {{- $main = $main | resources.ExecuteAsTemplate (printf "css/main.dev.%v.css" now.UnixMilli) . -}}
 {{- end -}}
 
-{{- $css := slice $main -}}
+{{- $css := slice $main $formControls -}}
 
 {{- if hugo.IsProduction -}}
   {{- with $css | resources.Concat "css/bundle.css" | minify | fingerprint -}}

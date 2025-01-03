@@ -28,15 +28,15 @@
           <legend>Sort by</legend>
           <div class="px-1">
             <label class="block">
-              <input type="radio" name="sort" value="" checked />
+              {{ partial "form-controls/radio.html" (dict "name" "sort" "value" "" "checked" true) }}
               Relevance
             </label>
             <label class="block">
-              <input type="radio" name="sort" value="date:desc" />
+              {{ partial "form-controls/radio.html" (dict "name" "sort" "value" "date:desc") }}
               Newest first
             </label>
             <label class="block">
-              <input type="radio" name="sort" value="date:asc" />
+              {{ partial "form-controls/radio.html" (dict "name" "sort" "value" "date:asc") }}
               Oldest first
             </label>
           </div>
@@ -48,13 +48,11 @@
           </fieldset>
         </template>
         <template id="filter-tpl">
-          <div>
-            <input id="filter-name" type="checkbox" />
-            <label for="filter-name" class="select-none">
-              <span class="filter__name">Filter name</span>
-              <span class="filter__amount">(5)</span></label
-            >
-          </div>
+          <label for="filter-name" class="block select-none">
+            {{ partial "form-controls/checkbox.html" (dict "id" "filter-name") }}
+            <span class="filter__name">Filter name</span>
+            <span class="filter__amount">(5)</span>
+          </label>
         </template>
       </details>
       <output>

@@ -1,0 +1,18 @@
+{{- $name := .name -}}
+{{- $value := .value -}}
+{{- $checked := .checked -}}
+<input
+  type="radio"
+  name="{{ $name }}"
+  value="{{ $value }}"
+  {{ with $checked }}checked{{ end }}
+  class="
+    appearance-none m-0
+    size-3.5 border-2 border-current rounded-full bg-transparent
+    hover:opacity-90
+    checked:shadow-neutral-50 dark:checked:shadow-neutral-900 checked:shadow-[0_0_0_0.125rem_inset]
+    checked:bg-violet-700 checked:border-violet-700
+    dark:checked:bg-violet-400 dark:checked:border-violet-400
+    forced-colors:checked:bg-[CanvasText]
+  "
+/>
