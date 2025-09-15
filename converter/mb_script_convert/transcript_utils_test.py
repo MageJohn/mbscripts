@@ -1,7 +1,12 @@
 import pytest
 
 from .transcript import Transcript
-from .transcript_utils import _parse_parenthetical, combine_more, extract_parentheticals
+from .transcript_utils import (
+    _parse_parenthetical,
+    combine_more,
+    extract_parentheticals,
+    split_short_dialogue,
+)
 
 
 def test__parse_parenthetical():
@@ -94,4 +99,97 @@ def test_extract_parentheticals(content_in, content_out):
 def test_combine_more(content_in, content_out):
     transcript = Transcript(content=list(content_in))
     combine_more(transcript)
+    assert transcript.content == content_out
+
+
+@pytest.mark.parametrize(
+    "content_in, content_out",
+    [
+        (
+            [
+                ("character", "CLEMENTINE"),
+                ("dialogue", "Yes, thank you."),
+                ("direction", "CLEMENTINE Yes."),
+            ],
+            [
+                ("character", "CLEMENTINE"),
+                ("dialogue", "Yes, thank you."),
+                ("character", "CLEMENTINE"),
+                ("dialogue", "Yes."),
+            ],
+        ),
+        (
+            [
+                ("character", "CLEMENTINE"),
+                ("dialogue", "Yes, thank you."),
+                ("direction", "CLEMENTINE (CONT'D) Yes."),
+                ("direction", "CLEMENTINE (CONT’D) Yes."),
+            ],
+            [
+                ("character", "CLEMENTINE"),
+                ("dialogue", "Yes, thank you."),
+                ("character", "CLEMENTINE (CONT'D)"),
+                ("dialogue", "Yes."),
+                ("character", "CLEMENTINE (CONT’D)"),
+                ("dialogue", "Yes."),
+            ],
+        ),
+        (
+            [
+                ("character", "TED BOT"),
+                ("dialogue", "Yes, thank you."),
+                ("direction", "TED BOT Yes."),
+            ],
+            [
+                ("character", "TED BOT"),
+                ("dialogue", "Yes, thank you."),
+                ("character", "TED BOT"),
+                ("dialogue", "Yes."),
+            ],
+        ),
+        (
+            [
+                ("character", "TED BOT"),
+                ("dialogue", "Yes, thank you."),
+                ("direction", "TED BOT (CONT'D) Yes."),
+            ],
+            [
+                ("character", "TED BOT"),
+                ("dialogue", "Yes, thank you."),
+                ("character", "TED BOT (CONT'D)"),
+                ("dialogue", "Yes."),
+            ],
+        ),
+        (
+            [
+                ("character", "CLEMENTINE"),
+                ("dialogue", "Yes, thank you."),
+                ("direction", "CLEMENTINE WALKS AROUND"),
+            ],
+            [
+                ("character", "CLEMENTINE"),
+                ("dialogue", "Yes, thank you."),
+                ("direction", "CLEMENTINE WALKS AROUND"),
+            ],
+        ),
+        (
+            [
+                ("character", "POTION MAESTRO"),
+                ("dialogue", "What do you... want?"),
+                ("direction", "POTION MAESTRO ... yes."),
+            ],
+            [
+                ("character", "POTION MAESTRO"),
+                ("dialogue", "What do you... want?"),
+                ("character", "POTION MAESTRO"),
+                ("dialogue", "... yes."),
+            ],
+        ),
+    ],
+)
+def test_split_short_dialogue(content_in, content_out):
+    transcript = Transcript(content=list(content_in))
+
+    split_short_dialogue(transcript)
+
     assert transcript.content == content_out

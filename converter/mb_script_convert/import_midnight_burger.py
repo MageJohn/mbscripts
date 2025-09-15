@@ -15,7 +15,7 @@ from mb_script_convert.pdf_utils import (
 )
 
 from .transcript import Transcript
-from .transcript_utils import combine_more, extract_parentheticals
+from .transcript_utils import combine_more, extract_parentheticals, split_short_dialogue
 
 logger = logging.getLogger(__name__)
 
@@ -31,6 +31,7 @@ def import_transcript(pdf_file: str, debug: bool) -> Transcript:
     transcript = tagged_pdf_to_transcript(pdf)
     extract_parentheticals(transcript)
     combine_more(transcript)
+    split_short_dialogue(transcript)
     return transcript
 
 

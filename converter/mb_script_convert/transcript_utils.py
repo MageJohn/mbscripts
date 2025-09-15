@@ -1,4 +1,5 @@
 import logging
+import re
 
 from .transcript import Transcript
 
@@ -54,3 +55,23 @@ def combine_more(transcript: Transcript):
                 )
             else:
                 del transcript.content[i : i + 2]
+
+
+def split_short_dialogue(transcript: Transcript):
+    """
+    A character saying short, often one word lines of dialogue can get misinterpreted as direction.
+    This function finds these cases and splits them out.
+    """
+
+    characters = set(el[1] for el in transcript.content if el[0] == "character")
+
+    for i, (tag, text) in enumerate(transcript.content):
+        if tag != "direction":
+            continue
+        for character in characters:
+            if match := re.match(r"(" + character + r"(?: \(CONT['’]D\))?) (.*[a-z].*)", text):
+                extracted = match.groups()
+                transcript.content[i : i + 1] = [
+                    ("character", extracted[0]),
+                    ("dialogue", extracted[1]),
+                ]
