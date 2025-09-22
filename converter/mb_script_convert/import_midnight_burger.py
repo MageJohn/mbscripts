@@ -29,9 +29,9 @@ def import_transcript(pdf_file: str, debug: bool) -> Transcript:
     if debug:
         _visualise(pdf)
     transcript = tagged_pdf_to_transcript(pdf)
+    split_short_dialogue(transcript)
     extract_parentheticals(transcript)
     combine_more(transcript)
-    split_short_dialogue(transcript)
     return transcript
 
 
