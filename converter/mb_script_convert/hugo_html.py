@@ -2,12 +2,18 @@ from contextlib import nullcontext
 from io import BytesIO
 from pathlib import Path
 from typing import IO
+import tomllib
+import logging
+from dataclasses import fields
 
 import lxml.html as html
 import lxml.html.builder as b
 import tomli_w
 
-from .transcript import Transcript
+from .transcript import Transcript, Metadata
+
+
+logger = logging.getLogger(__name__)
 
 type HugoFrontmatter = dict[str, str | HugoFrontmatter]
 
@@ -35,3 +41,21 @@ def dumps(transcript: Transcript) -> str:
     out = BytesIO()
     dump(transcript, out)
     return out.getvalue().decode("utf-8")
+
+
+def load_metadata(file_or_path: str | Path | IO[str], transcript: Transcript):
+    if isinstance(file_or_path, str) or isinstance(file_or_path, Path):
+        path = Path(file_or_path)
+        assert path.exists(), "Invalid path passed"
+        file = path.open("r")
+    else:
+        file = nullcontext(file_or_path)
+    with file as fh:
+        if fh.readline() != "+++\n":
+            logger.warning("Existing output file is not a valid Hugo document")
+        frontmatter_str = ""
+        while (line := fh.readline()) != "+++\n":
+            frontmatter_str += line
+
+    frontmatter = tomllib.loads(frontmatter_str)
+    transcript.metadata = Metadata.from_hugo_frontmatter(frontmatter)

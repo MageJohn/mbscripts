@@ -2,19 +2,15 @@ import argparse
 import logging
 import sys
 
-from mb_script_convert.scrape_rss import scrape_episode_metadata
-
-from . import normalisations
-from .hugo_html import dump
-from .import_midnight_burger import import_transcript
+from .main import main
 
 logger = logging.getLogger(__name__)
 
 MB_RSS_URL = "https://feeds.megaphone.fm/midnightburger"
 
 parser = argparse.ArgumentParser()
-parser.add_argument("infile")
-parser.add_argument("-o", "--outfile", default=sys.stdout.buffer)
+parser.add_argument("IN")
+parser.add_argument("-o", "--output", default=sys.stdout.buffer)
 parser.add_argument(
     "--episode-title", help="Override the episode title as parsed from the PDF"
 )
@@ -28,28 +24,22 @@ parser.add_argument(
     default=MB_RSS_URL,
     help="Override the URL of the Midnight Burger RSS feed",
 )
+parser.add_argument(
+    "-O", "--overwrite", action="store_true", help="Allow overwriting the output"
+)
 parser.add_argument("--debug", action="store_true")
-
-
-def main(infile, outfile, episode_title, skip_scraping, rss_url, debug):
-    logging.basicConfig(level=logging.INFO, format="{levelname}: {message}", style="{")
-
-    doc = import_transcript(infile, debug)
-    normalisations.run_all(doc)
-    if episode_title:
-        doc.metadata.episode_title = episode_title
-    if not skip_scraping:
-        scrape_episode_metadata(doc, rss_url)
-    dump(doc, outfile)
-
 
 if __name__ == "__main__":
     args = parser.parse_args()
-    main(
-        args.infile,
-        args.outfile,
-        args.episode_title,
-        args.skip_scraping,
-        args.rss_url,
-        args.debug,
-    )
+    try:
+        main(
+            args.IN,
+            args.output,
+            args.episode_title,
+            args.skip_scraping,
+            args.rss_url,
+            args.overwrite,
+            args.debug,
+        )
+    except RuntimeError as e:
+        logger.error(*e.args)
