@@ -69,7 +69,9 @@ def split_short_dialogue(transcript: Transcript):
         if tag != "direction":
             continue
         for character in characters:
-            if match := re.match(r"(" + character + r"(?: \(CONT['’]D\))?) (.*[a-z].*)", text):
+            if match := re.match(
+                r"(" + character + r"(?: \(CONT['’]D\))?) (.*[a-z].*)", text
+            ):
                 extracted = match.groups()
                 transcript.content[i : i + 1] = [
                     ("character", extracted[0]),

@@ -9,7 +9,9 @@ class TestMatchEpisode:
         {"title": "Patreon Drop! Shift Notes Chapter 38: Welcome to the Triad"},
         {"title": "Young Leif Part 1: Bertiluna"},
         {"title": "Welcome to the Horizon Part 1: Relentless Rick"},
-        {"title": "Patreon Drop! Shift Notes Welcome to the Horizon Part 1: Relentless Rick"},
+        {
+            "title": "Patreon Drop! Shift Notes Welcome to the Horizon Part 1: Relentless Rick"
+        },
     ]
 
     FAKE_FEED = FeedParserDict({"entries": [FeedParserDict(e) for e in ENTRIES]})
