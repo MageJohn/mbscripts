@@ -1,4 +1,0 @@
-# serializer version: 1
-# name: TestMetadataFromFrontmatter.test_from_toml
-  Metadata(episode_title='Chapter 1: The Transdimensional Haboob', series='Midnight Burger', season='1', season_episode_number='1', date_published='2020-10-27T18:01:00', cover_url='https://example.com/image.jpg')
-# ---

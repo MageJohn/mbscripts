@@ -1,6 +1,7 @@
-from dataclasses import dataclass, fields
-from typing import Literal, Optional, Any, TypeVar, Self, cast
 import logging
+from dataclasses import dataclass, fields
+from datetime import datetime
+from typing import Literal, Optional, Self
 
 logger = logging.getLogger(__name__)
 
@@ -15,63 +16,15 @@ type HugoFrontmatter = dict[str, str | HugoFrontmatter]
 class Metadata:
     episode_title: Optional[str] = None
     series: Optional[str] = None
-    season: Optional[str] = None
-    season_episode_number: Optional[str] = None
-    date_published: Optional[str] = None
+    season: Optional[int] = None
+    season_episode_number: Optional[int] = None
+    date_published: Optional[datetime] = None
     cover_url: Optional[str] = None
 
     def merge(self, other: Self):
         for field in fields(self):
             if getattr(self, field.name) is None:
                 setattr(self, field.name, getattr(other, field.name))
-
-    def to_hugo_frontmatter(self) -> HugoFrontmatter:
-        params = {}
-        frontmatter: HugoFrontmatter = {"params": params}
-        for field in fields(self):
-            name, value = field.name, getattr(self, field.name)
-            if value is None:
-                continue
-            match name:
-                case "episode_title":
-                    frontmatter["title"] = value
-                case "date_published":
-                    frontmatter["date"] = value
-                case _:
-                    params[name] = value
-        return frontmatter
-
-    @classmethod
-    def from_hugo_frontmatter(cls, frontmatter: dict[str, Any]) -> Self:
-        m = cls()
-
-        params = _checked_get(frontmatter, "params", dict)
-        if params is None:
-            params = {}
-        for field in fields(m):
-            match field.name:
-                case "episode_title":
-                    m.episode_title = _checked_get(frontmatter, "title", str)
-                case "date_published":
-                    m.date_published = _checked_get(frontmatter, "date", str)
-                case _:
-                    setattr(m, field.name, _checked_get(params, field.name, cast(type, field.type)))
-        return m
-
-
-T = TypeVar("T")
-
-
-def _checked_get(frontmatter: dict[str, Any], key: str, type_: type[T]) -> T | None:
-    value = frontmatter.get(key)
-    if isinstance(value, type_):
-        return value
-    elif value is None:
-        return None
-    else:
-        logger.warning(
-            f"Invalid type for field {key} when loading frontmatter. Expected {type_}, got {type(value)}."
-        )
 
 
 class Transcript:

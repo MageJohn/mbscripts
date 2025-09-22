@@ -1,4 +1,5 @@
 from pathlib import Path
+from datetime import datetime
 
 import pytest
 
@@ -10,7 +11,9 @@ from mb_script_convert.transcript import Metadata, Transcript
 def transcript():
     return Transcript(
         metadata=Metadata(
-            episode_title="Panopticon", season="4", date_published="October 17, 2019"
+            episode_title="Panopticon",
+            season=4,
+            date_published=datetime.fromisoformat("2019-10-17"),
         ),
         content=[
             ("direction", "TAPE CLICKS ON"),
@@ -41,6 +44,7 @@ def test_dump(transcript, snapshot, tmp_path: Path):
         assert fh.read() == snapshot
     with open(out_fh_path, "r") as fh:
         assert fh.read() == snapshot
+
 
 def test_load_metadata(transcript, tmp_path: Path):
     existing_transcript = tmp_path / "test.html"

@@ -1,21 +1,35 @@
+import logging
+import tomllib
 from contextlib import nullcontext
 from io import BytesIO
 from pathlib import Path
-from typing import IO
-import tomllib
-import logging
-from dataclasses import fields
+from typing import IO, Union
 
 import lxml.html as html
 import lxml.html.builder as b
 import tomli_w
+from adaptix import P, Retort, as_sentinel, name_mapping
 
-from .transcript import Transcript, Metadata
-
+from .transcript import Metadata, Transcript
 
 logger = logging.getLogger(__name__)
 
-type HugoFrontmatter = dict[str, str | HugoFrontmatter]
+
+retort = Retort(
+    recipe=[
+        name_mapping(
+            Metadata,
+            map=[
+                ("episode_title", "title"),
+                ("date_published", "date"),
+                (".*", ["params", ...]),
+            ],
+            omit_default=True,
+        ),
+        as_sentinel(P[Metadata][Union][None]),
+    ],
+    strict_coercion=False,
+)
 
 
 def dump(transcript: Transcript, file_or_path: str | Path | IO[bytes]):
@@ -27,7 +41,7 @@ def dump(transcript: Transcript, file_or_path: str | Path | IO[bytes]):
         file = nullcontext(file_or_path)
     with file as fh:
         fh.write(b"+++\n")
-        tomli_w.dump(transcript.metadata.to_hugo_frontmatter(), fh)
+        tomli_w.dump(retort.dump(transcript.metadata), fh)
         fh.write(b"+++\n\n")
 
         for el in transcript.content:
@@ -58,4 +72,4 @@ def load_metadata(file_or_path: str | Path | IO[str], transcript: Transcript):
             frontmatter_str += line
 
     frontmatter = tomllib.loads(frontmatter_str)
-    transcript.metadata = Metadata.from_hugo_frontmatter(frontmatter)
+    transcript.metadata = retort.load(frontmatter, Metadata)
