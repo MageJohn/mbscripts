@@ -17,7 +17,7 @@ def test__parse_parenthetical():
 
 
 @pytest.mark.parametrize(
-    "content_in, content_out",
+    ("content_in", "content_out"),
     [
         (
             [
@@ -62,9 +62,10 @@ def test_extract_parentheticals(content_in, content_out):
 
 
 @pytest.mark.parametrize(
-    "content_in, content_out",
+    ("content_in", "content_out"),
     [
         ([("direction", "(MORE)"), ("direction", "(CONT'D)")], []),
+        # continued marker with curly apostrophe
         ([("direction", "(MORE)"), ("direction", "(CONT’D)")], []),
         ([("direction", "(MORE)"), ("direction", "AVA (CONT'D)")], []),
         (
@@ -103,7 +104,7 @@ def test_combine_more(content_in, content_out):
 
 
 @pytest.mark.parametrize(
-    "content_in, content_out",
+    ("content_in", "content_out"),
     [
         (
             [
@@ -123,6 +124,7 @@ def test_combine_more(content_in, content_out):
                 ("character", "CLEMENTINE"),
                 ("dialogue", "Yes, thank you."),
                 ("direction", "CLEMENTINE (CONT'D) Yes."),
+                # curly apostrophe
                 ("direction", "CLEMENTINE (CONT’D) Yes."),
             ],
             [
@@ -130,6 +132,7 @@ def test_combine_more(content_in, content_out):
                 ("dialogue", "Yes, thank you."),
                 ("character", "CLEMENTINE (CONT'D)"),
                 ("dialogue", "Yes."),
+                # curly apostrophe
                 ("character", "CLEMENTINE (CONT’D)"),
                 ("dialogue", "Yes."),
             ],

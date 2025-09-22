@@ -23,3 +23,58 @@ dev = [
     "shapely>=2.0.6",
     "syrupy>=4.8.0",
 ]
+
+[tool.ruff]
+unsafe-fixes = true
+
+[tool.ruff.lint]
+select = [
+    # pycodestyle
+    "E",
+    # Pyflakes
+    "F",
+    # isort
+    "I",
+    # bugbear
+    "B",
+    # pydocstyle
+    "D",
+    # ruff specific rules
+    "RUF",
+    # refurb
+    "FURB",
+    # pylint
+    "PL",
+    # perflint
+    "PERF",
+    # builtins
+    "A",
+    # comprehensions
+    "C4",
+    # errmsg
+    "EM",
+    # logging-format
+    "G",
+    # pytest-style
+    "PT",
+    # simplify
+    "SIM",
+    # type-checking
+    "TC",
+    # unused-arguments
+    "ARG",
+    # naming
+    "N",
+]
+ignore = [
+    # line length should be handled by the formatter
+    "E501",
+    # this project doesn't need docstrings on everything
+    "D1",
+    # with the curly apostrophes everywhere this one gets in the way
+    "RUF001",
+    # prefer D211 over this
+    "D203",
+    # prefer D212 over this
+    "D213",
+]

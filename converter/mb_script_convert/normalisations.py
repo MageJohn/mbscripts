@@ -1,6 +1,4 @@
-"""
-Functions which normalise the text content of a Transcript
-"""
+"""Functions which normalise the text content of a Transcript."""
 
 from mb_script_convert.transcript import Transcript
 

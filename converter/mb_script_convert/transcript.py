@@ -28,8 +28,8 @@ class Metadata:
 
 
 class Transcript:
-    """
-    Represents a transcript in a format agnostic way.
+    """Represents a transcript in a format agnostic way.
+
     Used as an intermediate step when converting.
     """
 

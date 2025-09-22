@@ -11,7 +11,7 @@ def _parse_parenthetical(text: str):
         return (None, text)
     par_depth = 0
     i = 0
-    for i, c in enumerate(text):
+    for i, c in enumerate(text):  # noqa: B007
         if c == "(":
             par_depth += 1
         elif c == ")":
@@ -51,19 +51,19 @@ def combine_more(transcript: Transcript):
             _, contd = transcript.content[i + 1]
             if "(CONT'D)" not in contd.replace("’", "'"):
                 logger.warning(
-                    f"(CONT'D) not found after (MORE). Instead found {contd}"
+                    "(CONT'D) not found after (MORE). Instead found %s", contd
                 )
             else:
                 del transcript.content[i : i + 2]
 
 
 def split_short_dialogue(transcript: Transcript):
-    """
+    """Split CHARACTER from dialogue.
+
     A character saying short, often one word lines of dialogue can get misinterpreted as direction.
     This function finds these cases and splits them out.
     """
-
-    characters = set(el[1] for el in transcript.content if el[0] == "character")
+    characters = {el[1] for el in transcript.content if el[0] == "character"}
 
     for i, (tag, text) in enumerate(transcript.content):
         if tag != "direction":

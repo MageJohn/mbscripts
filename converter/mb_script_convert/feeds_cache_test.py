@@ -3,7 +3,7 @@ from pathlib import Path
 from .feeds_cache import Cache
 
 
-def test_Cache(tmp_path: Path):
+def test_cache(tmp_path: Path):
     test_cache_file = tmp_path / "cache.pickle"
     test_cache = Cache(test_cache_file)
 

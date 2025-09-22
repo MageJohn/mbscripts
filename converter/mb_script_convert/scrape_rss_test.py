@@ -1,9 +1,10 @@
-from .scrape_rss import _match_episode
 from feedparser import FeedParserDict
+
+from .scrape_rss import _match_episode
 
 
 class TestMatchEpisode:
-    ENTRIES = [
+    ENTRIES = (
         {"title": "Chapter 1: The Transdimensional Haboob"},
         {"title": "Chapter 38: Welcome to the Triad"},
         {"title": "Patreon Drop! Shift Notes Chapter 38: Welcome to the Triad"},
@@ -12,7 +13,7 @@ class TestMatchEpisode:
         {
             "title": "Patreon Drop! Shift Notes Welcome to the Horizon Part 1: Relentless Rick"
         },
-    ]
+    )
 
     FAKE_FEED = FeedParserDict({"entries": [FeedParserDict(e) for e in ENTRIES]})
 

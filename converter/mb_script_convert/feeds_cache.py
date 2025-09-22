@@ -12,7 +12,7 @@ class Cache(dict[str, Any]):
     def __init__(self, cache_file: str | Path):
         self.modified: bool = False
         self.cache_file = Path(cache_file)
-        return super().__init__()
+        super().__init__()
 
     def __setitem__(self, key: str, value: Any, /) -> None:
         self.modified = True

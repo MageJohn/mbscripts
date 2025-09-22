@@ -11,6 +11,9 @@ if TYPE_CHECKING:
 
     from py_pdf_parser.filtering import PDFElement
 
+PAGE_X_CENTER = 500
+PAGE_Y_CENTER = 740
+
 
 def is_centered(element: PDFElement) -> bool:
     page = element.document.get_page(element.page_number)
@@ -23,11 +26,9 @@ def is_centered(element: PDFElement) -> bool:
 
 
 def is_in_top_right(element: PDFElement) -> bool:
-    """
-    If it is the top right of the page, could be a page number
-    """
+    """If it is the top right of the page, could be a page number."""
     bb = element.bounding_box
-    return bb.x0 >= 500 and bb.y0 >= 740
+    return bb.x0 >= PAGE_X_CENTER and bb.y0 >= PAGE_Y_CENTER
 
 
 def is_off_page(element: PDFElement) -> bool:
@@ -37,17 +38,17 @@ def is_off_page(element: PDFElement) -> bool:
 
 
 def by_indent(indent: float | int) -> Callable[[PDFElement], bool]:
-    def filter(element: PDFElement) -> bool:
+    def predicate(element: PDFElement) -> bool:
         return isclose(element.bounding_box.x0, indent, abs_tol=10)
 
-    return filter
+    return predicate
 
 
 def by_min_indent(indent: float | int) -> Callable[[PDFElement], bool]:
-    def filter(element: PDFElement) -> bool:
+    def predicate(element: PDFElement) -> bool:
         return element.bounding_box.x0 > indent
 
-    return filter
+    return predicate
 
 
 def clean_text(element: PDFElement) -> str:

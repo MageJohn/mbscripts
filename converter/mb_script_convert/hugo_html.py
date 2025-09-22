@@ -5,10 +5,10 @@ from io import BytesIO
 from pathlib import Path
 from typing import IO, Union
 
-import lxml.html as html
 import lxml.html.builder as b
 import tomli_w
 from adaptix import P, Retort, as_sentinel, name_mapping
+from lxml import html
 
 from .transcript import Metadata, Transcript
 
@@ -33,7 +33,7 @@ retort = Retort(
 
 
 def dump(transcript: Transcript, file_or_path: str | Path | IO[bytes]):
-    if isinstance(file_or_path, str) or isinstance(file_or_path, Path):
+    if isinstance(file_or_path, (str, Path)):
         path = Path(file_or_path)
         path.parent.mkdir(parents=True, exist_ok=True)
         file = path.open("wb+")
@@ -58,7 +58,7 @@ def dumps(transcript: Transcript) -> str:
 
 
 def load_metadata(file_or_path: str | Path | IO[str], transcript: Transcript):
-    if isinstance(file_or_path, str) or isinstance(file_or_path, Path):
+    if isinstance(file_or_path, (str, Path)):
         path = Path(file_or_path)
         assert path.exists(), "Invalid path passed"
         file = path.open("r")

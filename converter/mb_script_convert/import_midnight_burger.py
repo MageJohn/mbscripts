@@ -21,6 +21,7 @@ logger = logging.getLogger(__name__)
 
 DIRECTIONS_INDENT = 108.0
 DIALOGUE_INDENT = 144.0
+MAX_TITLE_PAGE_LEN = 5
 
 
 def import_transcript(pdf_file: str, debug: bool) -> Transcript:
@@ -36,7 +37,7 @@ def import_transcript(pdf_file: str, debug: bool) -> Transcript:
 
 
 def _visualise(pdf: PDFDocument):
-    from py_pdf_parser.visualise import visualise
+    from py_pdf_parser.visualise import visualise  # noqa: PLC0415
 
     visualise(pdf)
 
@@ -53,7 +54,10 @@ def tag_pdf(pdf: PDFDocument):
 
     # Detect and ignore title page
     first_page = pdf.get_page(1).elements
-    if all(is_centered(el) for el in first_page) and len(first_page) <= 5:
+    if (
+        all(is_centered(el) for el in first_page)
+        and len(first_page) <= MAX_TITLE_PAGE_LEN
+    ):
         first_page.ignore_elements()
         first_page = pdf.elements.filter_by_page(2)
     else:
@@ -67,7 +71,7 @@ def tag_pdf(pdf: PDFDocument):
     last_page = pdf.pages[-1].elements
     try:
         end = (
-            last_page.filter_by_regex(r".*\bend\b.*", re.I)
+            last_page.filter_by_regex(r".*\bend\b.*", re.IGNORECASE)
             .filter(by_min_indent(DIALOGUE_INDENT + 10))
             .last()
         )
@@ -90,19 +94,19 @@ def tag_pdf(pdf: PDFDocument):
     if len(others) > 0:
         logger.warning("Found text that has not been categorised:")
         for el in others:
-            logger.warning(f"{repr(el.text())} {el.bounding_box}")
+            logger.warning("%s %s", repr(el.text()), repr(el.bounding_box))
 
     script = directions | dialogue
 
     for el in directions:
         try:
-            next = script.move_forwards_from(el)
+            next_ = script.move_forwards_from(el)
         except ElementOutOfRangeError:
-            next = None
-        if next is not None and "dialogue" in next.tags:
-            el.tags = set(["character"])
+            next_ = None
+        if next_ is not None and "dialogue" in next_.tags:
+            el.tags = {"character"}
         else:
-            el.tags = set(["direction"])
+            el.tags = {"direction"}
 
 
 def tagged_pdf_to_transcript(tagged: PDFDocument) -> Transcript:

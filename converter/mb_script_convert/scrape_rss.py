@@ -56,7 +56,7 @@ def scrape_episode_metadata(transcript: Transcript, url_file_stream_or_string):
     for field in fields(transcript.metadata):
         name, value = field.name, getattr(transcript.metadata, field.name)
         if value is None:
-            logger.warning(f"Could not find a value for {name}")
+            logger.warning("Could not find a value for %s", name)
 
 
 def _get_feed(url_file_stream_or_string) -> FeedParserDict | None:
@@ -75,11 +75,15 @@ def _get_feed(url_file_stream_or_string) -> FeedParserDict | None:
                 pass
             case 301:
                 logger.warning(
-                    f"HTTP response 301: {url} has permanently moved to {cache[url].href}"
+                    "HTTP response 301: %s has permanently moved to %s",
+                    url,
+                    cache[url].href,
                 )
             case _:
                 logger.warning(
-                    f"Something went wrong fetching {url} (status {cache[url].status}). Cannot scrape metadata"
+                    "Something went wrong fetching %s (status %s). Cannot scrape metadata",
+                    url,
+                    cache[url].status,
                 )
                 return
     else:
@@ -95,15 +99,22 @@ def _get_feed(url_file_stream_or_string) -> FeedParserDict | None:
                 pass
             case 301:
                 logger.warning(
-                    f"HTTP response 301: {url} has permanently moved to {new_feed.href}"
+                    "HTTP response 301: %s has permanently moved to %s",
+                    url,
+                    new_feed.href,
                 )
                 cache[url] = new_feed
             case _:
                 logger.warning(
-                    f"Something went wrong fetching {url} (status {new_feed.status}). Using cached feed."
+                    "Something went wrong fetching %s (status %s). Using cached feed.",
+                    url,
+                    new_feed.status,
                 )
 
     return cache[url]
+
+
+SIMILARITY_THRESHOLD = 85
 
 
 def _match_episode(ep_title: str, feed: FeedParserDict) -> FeedParserDict | None:
@@ -114,25 +125,27 @@ def _match_episode(ep_title: str, feed: FeedParserDict) -> FeedParserDict | None
         ratio = fuzz.partial_ratio(ep_title, entry.title)
         if ratio > most_similar[0]:
             most_similar = (ratio, entry)
-        if ratio > 85:
+        if ratio > SIMILARITY_THRESHOLD:
             matches.append(entry)
     assert most_similar[1] is not None
     if len(matches) > 0:
         if len(matches) == 1:
             result = matches[0]
         else:
-            ratios = list(map(lambda e: fuzz.ratio(ep_title, e.title), matches))
+            ratios = [fuzz.ratio(ep_title, e.title) for e in matches]
             result = matches[_argmax(ratios)]
-        logger.info(f"Matched episode '{result.title}' in RSS feed")
+        logger.info("Matched episode '%s' in RSS feed", result.title)
         return result
     else:
-        logger.warning(f"Could not find entry matching '{ep_title}'")
+        logger.warning("Could not find entry matching '%s'", ep_title)
         logger.warning(
-            f"The most similar title is {most_similar[1].title} (similarity {most_similar[0]})"
+            "The most similar title is %s (similarity %s)",
+            most_similar[1].title,
+            most_similar[0],
         )
         logger.warning("Set the correct title with the --episode-title flag")
 
 
 def _argmax(a: Sequence[float]):
-    """Return the index of the maximum value in a"""
+    """Return the index of the maximum value in a."""
     return max(range(len(a)), key=lambda x: a[x])
