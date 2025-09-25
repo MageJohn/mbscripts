@@ -38,12 +38,9 @@ def test_dump(transcript, snapshot, tmp_path: Path):
     with open(out_fh_path, "wb") as out_fh:
         dump(transcript, out_fh)
 
-    with open(out_path, "r") as fh:
-        assert fh.read() == snapshot
-    with open(out_str, "r") as fh:
-        assert fh.read() == snapshot
-    with open(out_fh_path, "r") as fh:
-        assert fh.read() == snapshot
+    assert out_path.read_text(encoding="utf-8") == snapshot
+    assert Path(out_str).read_text(encoding="utf-8") == snapshot
+    assert out_fh_path.read_text(encoding="utf-8") == snapshot
 
 
 def test_load_metadata(transcript, tmp_path: Path):

@@ -62,7 +62,7 @@ def scrape_episode_metadata(transcript: Transcript, url_file_stream_or_string):
 def _get_feed(url_file_stream_or_string) -> FeedParserDict | None:
     looks_like_url = isinstance(url_file_stream_or_string, str) and urlparse(
         url_file_stream_or_string
-    )[0] in ("http", "https")
+    )[0] in {"http", "https"}
     if not looks_like_url:
         return feedparser.parse(url_file_stream_or_string)
     url: str = url_file_stream_or_string

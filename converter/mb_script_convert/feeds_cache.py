@@ -1,5 +1,6 @@
 import atexit
 import pickle
+from collections import UserDict
 from os import environ
 from pathlib import Path
 from typing import Any
@@ -8,21 +9,21 @@ XDG_CACHE_HOME = Path(environ.get("XDG_CACHE_HOME", Path.home() / ".cache"))
 CACHE_FILE = XDG_CACHE_HOME / "mb-scripts" / "cache.pickle"
 
 
-class Cache(dict[str, Any]):
+class Cache(UserDict[str, Any]):
     def __init__(self, cache_file: str | Path):
         self.modified: bool = False
         self.cache_file = Path(cache_file)
         super().__init__()
 
-    def __setitem__(self, key: str, value: Any, /) -> None:
+    def __setitem__(self, key: str, value: Any) -> None:
         self.modified = True
-        return super().__setitem__(key, value)
+        self.data[key] = value
 
     def load_cache(self):
         if self.cache_file.exists():
             with self.cache_file.open("rb") as f:
                 cache: Cache = pickle.load(f)
-                self.update(cache)
+                self.data.update(cache)
 
     def save_cache(self):
         if self.modified:

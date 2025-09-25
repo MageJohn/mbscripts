@@ -28,6 +28,7 @@ dev = [
 unsafe-fixes = true
 
 [tool.ruff.lint]
+preview = true
 select = [
     # pycodestyle
     "E",
@@ -77,4 +78,6 @@ ignore = [
     "D203",
     # prefer D212 over this
     "D213",
+    # prefer just PLR0913
+    "PLR0917",
 ]

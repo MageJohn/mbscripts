@@ -61,7 +61,7 @@ def load_metadata(file_or_path: str | Path | IO[str], transcript: Transcript):
     if isinstance(file_or_path, (str, Path)):
         path = Path(file_or_path)
         assert path.exists(), "Invalid path passed"
-        file = path.open("r")
+        file = path.open("r", encoding="utf-8")
     else:
         file = nullcontext(file_or_path)
     with file as fh:

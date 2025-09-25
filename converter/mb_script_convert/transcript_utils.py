@@ -45,7 +45,9 @@ def extract_parentheticals(transcript: Transcript):
 
 
 def combine_more(transcript: Transcript):
-    for i, (tag, text) in enumerate(transcript.content):
+    i = 0
+    while i < len(transcript.content):
+        tag, text = transcript.content[i]
         if tag == "direction" and "(MORE)" in text:
             assert i < len(transcript.content) - 1
             _, contd = transcript.content[i + 1]
@@ -55,6 +57,8 @@ def combine_more(transcript: Transcript):
                 )
             else:
                 del transcript.content[i : i + 2]
+                continue
+        i += 1
 
 
 def split_short_dialogue(transcript: Transcript):
@@ -74,7 +78,8 @@ def split_short_dialogue(transcript: Transcript):
                 text,
             ):
                 extracted = match.groups()
-                transcript.content[i : i + 1] = [
+                # mutating the list here is the cleanest implementation
+                transcript.content[i : i + 1] = [  # noqa: B909
                     ("character", extracted[0]),
                     ("dialogue", extracted[1]),
                 ]
