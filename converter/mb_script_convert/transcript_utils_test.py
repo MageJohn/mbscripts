@@ -188,6 +188,19 @@ def test_combine_more(content_in, content_out):
                 ("dialogue", "... yes."),
             ],
         ),
+        (
+            [  # A character with a regex metacharacter
+                ("character", "WHO?"),
+                ("dialogue", "Yes, thank you."),
+                ("direction", "WHO? Yes"),
+            ],
+            [
+                ("character", "WHO?"),
+                ("dialogue", "Yes, thank you."),
+                ("character", "WHO?"),
+                ("dialogue", "Yes"),
+            ],
+        ),
     ],
 )
 def test_split_short_dialogue(content_in, content_out):

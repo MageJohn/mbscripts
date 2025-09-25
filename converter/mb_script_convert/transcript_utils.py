@@ -70,7 +70,8 @@ def split_short_dialogue(transcript: Transcript):
             continue
         for character in characters:
             if match := re.match(
-                r"(" + character + r"(?: \(CONT['’]D\))?) (.*[a-z].*)", text
+                r"({0}(?: \(CONT['’]D\))?) (.*[a-z].*)".format(re.escape(character)),
+                text,
             ):
                 extracted = match.groups()
                 transcript.content[i : i + 1] = [
