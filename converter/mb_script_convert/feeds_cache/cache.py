@@ -1,12 +1,7 @@
-import atexit
 import pickle
 from collections import UserDict
-from os import environ
 from pathlib import Path
 from typing import Any
-
-XDG_CACHE_HOME = Path(environ.get("XDG_CACHE_HOME", Path.home() / ".cache"))
-CACHE_FILE = XDG_CACHE_HOME / "mb-scripts" / "cache.pickle"
 
 
 class Cache(UserDict[str, Any]):
@@ -15,7 +10,7 @@ class Cache(UserDict[str, Any]):
         self.cache_file = Path(cache_file)
         super().__init__()
 
-    def __setitem__(self, key: str, value: Any) -> None:
+    def __setitem__(self, key: str, value: Any):
         self.modified = True
         self.data[key] = value
 
@@ -30,8 +25,3 @@ class Cache(UserDict[str, Any]):
             self.cache_file.parent.mkdir(parents=True, exist_ok=True)
             with self.cache_file.open("wb") as f:
                 pickle.dump(self, f, pickle.HIGHEST_PROTOCOL)
-
-
-cache = Cache(CACHE_FILE)
-cache.load_cache()
-atexit.register(cache.save_cache)

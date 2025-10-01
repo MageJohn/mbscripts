@@ -1,6 +1,6 @@
 from pathlib import Path
 
-from .feeds_cache import Cache
+from .cache import Cache
 
 
 def test_cache(tmp_path: Path):
