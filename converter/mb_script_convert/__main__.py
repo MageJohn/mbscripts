@@ -6,7 +6,7 @@ from .main import main
 
 logger = logging.getLogger(__name__)
 
-MB_RSS_URL = "https://feeds.megaphone.fm/midnightburger"
+MB_RSS_URL = "https://rss.art19.com/midnight-burger"
 
 parser = argparse.ArgumentParser()
 parser.add_argument("IN")
