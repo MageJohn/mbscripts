@@ -15,7 +15,7 @@
       {{ end }}
     {{ end }}
   {{ else }}
-    {{ $image = .Resources.Get "images/cover.png" | default (resources.Get "images/show-cover.png") }}
+    {{ $image = index (.Resources.ByType "image") 0 | default (resources.Get "images/show-cover.png") }}
   {{ end }}
 
   {{ if $image }}
