@@ -24,7 +24,7 @@ retort = Retort(
                 ("season", "itunes_season"),
                 ("episode", "itunes_episode"),
                 ("season_episode_number", "itunes_episode"),
-                ("cover_url", "image"),
+                ("cover_url", ["image", "href"]),
             ],
         ),
         loader(
