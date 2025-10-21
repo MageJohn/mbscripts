@@ -1,3 +1,6 @@
 baseURL = 'https://mbscripts.com/'
 languageCode = 'en-us'
 title = 'Midnight Burger Transcript Archive'
+
+[params]
+description = 'Midnight Burger transcripts in an accessible, searchable, mobile friendly format.'
