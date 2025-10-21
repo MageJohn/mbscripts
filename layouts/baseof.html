@@ -14,6 +14,10 @@
         {{ end }}{{ .Site.Title -}}
       {{ end }}
     </title>
+    <meta
+      name="description"
+      content="{{ or .Description site.Params.description }}"
+    />
     {{ hugo.Generator }}
     <meta name="robots" content="all" />
     {{- with .Params.author | default .Site.Params.author -}}
