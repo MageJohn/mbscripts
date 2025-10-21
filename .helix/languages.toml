@@ -1,0 +1,3 @@
+[[language]]
+name = "html"
+formatter = { command = "bunx", args = ["prettier", "--parser", "go-template"]}
